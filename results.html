@@ -533,7 +533,13 @@ function openProfile() {
   if (selectedId) openProfilePage(selectedId);
 }
 
-// Init
+// Init — read ZIP from URL if passed from homepage
+const urlParams = new URLSearchParams(window.location.search);
+const zipFromUrl = urlParams.get('zip');
+if (zipFromUrl) {
+  document.getElementById('zipInput').value = zipFromUrl;
+  document.getElementById('zipDisplay').textContent = zipFromUrl;
+}
 applyFilter();
 </script>
 </body>

@@ -439,11 +439,11 @@
 <nav>
   <div class="logo">flowers<span>by</span>zip</div>
   <ul class="nav-links">
-    <li><a href="#">How It Works</a></li>
-    <li><a href="#">Our Mission</a></li>
-    <li><a href="#">For Florists</a></li>
+    <li><a href="results.html">How It Works</a></li>
+    <li><a href="about.html">Our Mission</a></li>
+    <li><a href="register.html">For Florists</a></li>
   </ul>
-  <button class="nav-cta">List Your Shop</button>
+  <button class="nav-cta" onclick="window.location='register.html'">List Your Shop</button>
 </nav>
 
 <!-- HERO -->
@@ -568,7 +568,7 @@
   <h2>Are you an independent flower shop?</h2>
   <p>Listing on FlowersByZip is free. No commissions, no wire service fees — just a direct connection to customers in your area who want to support you.</p>
   <div class="cta-buttons">
-    <button class="btn-primary">List My Shop — It's Free</button>
+    <button class="btn-primary" onclick="window.location='register.html'">List My Shop — It's Free</button>
     <button class="btn-outline">Learn About Eligibility</button>
   </div>
 </section>
@@ -628,8 +628,7 @@
       document.getElementById('zipInput').placeholder = 'Enter a valid 5-digit ZIP';
       return;
     }
-    document.getElementById('zipDisplay').textContent = zip;
-    document.getElementById('resultsOverlay').classList.add('open');
+    window.location = 'results.html?zip=' + zip;
   }
 
   function closeModal() {
