@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowersByZip — Florist Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #1a3a2a; --green-mid: #2d5c3f; --sage: #7a9e7e;
+  --cream: #f5f0e8; --blush: #e8b4a0; --gold: #c9a84c;
+  --white: #ffffff; --muted: #7a8a80; --border: rgba(26,58,42,0.1);
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(245,240,232,0.95); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--green); text-decoration: none; }
+.logo em { font-style: italic; color: var(--sage); }
+.back-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.85rem; color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.back-btn:hover { color: var(--green); }
+
+/* HERO */
+.profile-hero {
+  padding-top: 64px;
+  background: var(--green);
+  color: var(--cream);
+  padding-bottom: 0;
+  position: relative; overflow: hidden;
+}
+.profile-hero::before {
+  content: '✿'; position: absolute; right: -2rem; top: 2rem;
+  font-size: 20rem; opacity: 0.04; color: white; line-height: 1;
+}
+.hero-inner {
+  max-width: 960px; margin: 0 auto;
+  padding: 4rem 2.5rem 2.5rem;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 2rem; align-items: start;
+}
+.hero-icon {
+  width: 90px; height: 90px; border-radius: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; flex-shrink: 0;
+}
+.hero-text { }
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--sage); margin-bottom: 0.5rem;
+}
+.verified-badge {
+  background: rgba(122,158,126,0.2); border: 1px solid var(--sage);
+  border-radius: 1rem; padding: 0.15rem 0.5rem;
+  font-size: 0.7rem; color: var(--sage);
+}
+.hero-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.2; margin-bottom: 0.4rem;
+}
+.hero-sub { font-size: 0.9rem; color: #b8ccbe; }
+.hero-actions { display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-end; padding-top: 0.5rem; }
+.btn-primary {
+  background: var(--blush); color: var(--green);
+  border: none; padding: 0.8rem 1.8rem; border-radius: 2rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-primary:hover { background: white; }
+.btn-outline-light {
+  background: transparent; color: var(--cream);
+  border: 1.5px solid rgba(255,255,255,0.3); padding: 0.6rem 1.4rem; border-radius: 2rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-outline-light:hover { border-color: var(--cream); background: rgba(255,255,255,0.08); }
+
+/* QUICK STATS BAR */
+.stats-bar {
+  max-width: 960px; margin: 0 auto;
+  padding: 1.5rem 2.5rem;
+  display: flex; gap: 2.5rem; flex-wrap: wrap;
+}
+.stat-item { }
+.stat-item-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; color: var(--cream);
+}
+.stat-item-label { font-size: 0.72rem; color: #88a890; margin-top: 0.1rem; }
+
+/* TABS NAV */
+.tabs-strip {
+  max-width: 960px; margin: 0 auto;
+  display: flex; gap: 0; padding: 0 2.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.tab-btn {
+  background: none; border: none; color: #88a890;
+  padding: 1rem 1.2rem; font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 500; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.tab-btn.active { color: var(--cream); border-bottom-color: var(--blush); }
+.tab-btn:hover { color: var(--cream); }
+
+/* BODY */
+.profile-body {
+  max-width: 960px; margin: 0 auto;
+  padding: 2.5rem;
+  display: grid; grid-template-columns: 1fr 320px;
+  gap: 2rem; align-items: start;
+}
+
+/* MAIN CONTENT */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.section-title {
+  font-family: 'Playfair Display', serif; font-size: 1.2rem;
+  color: var(--green); margin-bottom: 1rem;
+}
+
+.about-text { font-size: 0.95rem; line-height: 1.8; color: #4a5a50; margin-bottom: 1.5rem; }
+
+.specialty-grid {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;
+}
+.specialty-chip {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 2rem; padding: 0.4rem 1rem;
+  font-size: 0.82rem; color: var(--green-mid); font-weight: 500;
+}
+
+.owner-card {
+  background: white; border-radius: 1rem; padding: 1.2rem;
+  display: flex; align-items: center; gap: 1rem;
+  border: 1px solid var(--border);
+}
+.owner-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--sage); display: flex; align-items: center;
+  justify-content: center; font-size: 1.4rem; flex-shrink: 0;
+}
+.owner-info h4 { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--green); margin-bottom: 0.2rem; }
+.owner-info p { font-size: 0.78rem; color: var(--muted); }
+
+/* HOURS */
+.hours-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+.hours-table tr { border-bottom: 1px solid var(--border); }
+.hours-table tr:last-child { border-bottom: none; }
+.hours-table td { padding: 0.55rem 0; font-size: 0.88rem; }
+.hours-table td:first-child { color: var(--green); font-weight: 500; width: 40%; }
+.hours-table td:last-child { color: var(--muted); }
+.today-row td { color: var(--green) !important; font-weight: 600 !important; }
+.today-badge {
+  display: inline-block; background: #e8f2e8; color: var(--green-mid);
+  font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 0.5rem;
+  margin-left: 0.3rem; vertical-align: middle;
+}
+
+/* SIDEBAR */
+.sidebar { }
+.sidebar-card {
+  background: white; border-radius: 1rem; padding: 1.4rem;
+  border: 1px solid var(--border); margin-bottom: 1rem;
+}
+.sidebar-card h4 {
+  font-family: 'Playfair Display', serif; font-size: 0.95rem;
+  color: var(--green); margin-bottom: 1rem;
+}
+.contact-row {
+  display: flex; align-items: center; gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+.contact-row:last-child { margin-bottom: 0; }
+.contact-icon {
+  width: 32px; height: 32px; background: #eef4ee; border-radius: 0.5rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.contact-row a { font-size: 0.85rem; color: var(--green); text-decoration: none; font-weight: 500; }
+.contact-row a:hover { text-decoration: underline; }
+.contact-row span { font-size: 0.85rem; color: var(--muted); }
+
+.rating-big {
+  text-align: center; padding: 0.5rem 0 1rem;
+}
+.rating-num {
+  font-family: 'Playfair Display', serif; font-size: 3rem;
+  color: var(--green); line-height: 1;
+}
+.rating-stars { color: var(--gold); font-size: 1.1rem; letter-spacing: 0.1em; margin: 0.4rem 0; }
+.rating-count { font-size: 0.78rem; color: var(--muted); }
+
+.mission-mini {
+  background: var(--green); color: var(--cream);
+  border-radius: 1rem; padding: 1.2rem; text-align: center;
+}
+.mission-mini p { font-size: 0.78rem; line-height: 1.6; color: #b8ccbe; margin-bottom: 0.8rem; }
+.btn-sm-blush {
+  background: var(--blush); color: var(--green);
+  border: none; padding: 0.5rem 1.1rem; border-radius: 1.5rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+}
+
+/* responsive */
+@media (max-width: 720px) {
+  .hero-inner { grid-template-columns: auto 1fr; }
+  .hero-actions { flex-direction: row; align-items: flex-start; grid-column: 1/-1; }
+  .profile-body { grid-template-columns: 1fr; }
+  nav { padding: 0 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">flowers<em>by</em>zip</a>
+  <a class="back-btn" href="results.html">← Back to results</a>
+  <button class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.82rem;" onclick="visitShop()">Visit Shop Website →</button>
+</nav>
+
+<!-- HERO -->
+<section class="profile-hero">
+  <div class="hero-inner">
+    <div class="hero-icon" id="heroIcon" style="background:#e8f2e8">🌸</div>
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span class="verified-badge">✓ Verified Independent</span>
+        <span>No wire service affiliation</span>
+      </div>
+      <h1 id="shopName">Petal & Stem Studio</h1>
+      <div class="hero-sub" id="shopSub">1842 N. Halsted St · Chicago, IL · Est. 1998</div>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="visitShop()">Visit Their Website →</button>
+      <button class="btn-outline-light" id="phoneBtn">📞 Call Shop</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-item-num" id="statYears">—</div><div class="stat-item-label">Years in business</div></div>
+    <div class="stat-item"><div class="stat-item-num" id="statRating">—</div><div class="stat-item-label">Customer rating</div></div>
+    <div class="stat-item"><div class="stat-item-num" id="statReviews">—</div><div class="stat-item-label">Reviews</div></div>
+    <div class="stat-item"><div class="stat-item-num">0%</div><div class="stat-item-label">Wire service commission</div></div>
+  </div>
+  <div class="tabs-strip">
+    <button class="tab-btn active" onclick="switchTab('about',this)">About</button>
+    <button class="tab-btn" onclick="switchTab('hours',this)">Hours</button>
+    <button class="tab-btn" onclick="switchTab('specialties',this)">Specialties</button>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="profile-body">
+  <div>
+    <!-- ABOUT TAB -->
+    <div class="tab-panel active" id="tab-about">
+      <h3 class="section-title">About this shop</h3>
+      <p class="about-text" id="shopDesc">Loading…</p>
+
+      <h3 class="section-title">Meet the owner</h3>
+      <div class="owner-card">
+        <div class="owner-avatar">🧑‍🌾</div>
+        <div class="owner-info">
+          <h4 id="ownerName">—</h4>
+          <p>Independent shop owner · Listed on FlowersByZip</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOURS TAB -->
+    <div class="tab-panel" id="tab-hours">
+      <h3 class="section-title">Hours of operation</h3>
+      <table class="hours-table" id="hoursTable"></table>
+    </div>
+
+    <!-- SPECIALTIES TAB -->
+    <div class="tab-panel" id="tab-specialties">
+      <h3 class="section-title">What they specialize in</h3>
+      <div class="specialty-grid" id="specialtyGrid"></div>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;">For specific requests or custom orders, visit their website directly or give them a call. Independent florists love working with customers one-on-one to create something special.</p>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <h4>Contact & Visit</h4>
+      <div class="contact-row">
+        <div class="contact-icon">🌐</div>
+        <a href="#" id="websiteLink" target="_blank">Visit their website</a>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">📞</div>
+        <a href="#" id="phoneLink">—</a>
+      </div>
+      <div class="contact-row">
+        <div class="contact-icon">📍</div>
+        <span id="addressSpan">—</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <h4>Customer Rating</h4>
+      <div class="rating-big">
+        <div class="rating-num" id="ratingNum">—</div>
+        <div class="rating-stars" id="ratingStars">—</div>
+        <div class="rating-count" id="ratingCount">—</div>
+      </div>
+    </div>
+
+    <div class="mission-mini">
+      <p>When you order directly from this shop, <strong style="color:var(--cream)">100% of your purchase</strong> goes to them — no wire service fees, no commissions taken.</p>
+      <button class="btn-sm-blush" onclick="visitShop()">Order Direct →</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+const FLORISTS = [
+  { id:1, name:"Petal & Stem Studio", owner:"Maria Gonzalez", address:"1842 N. Halsted St, Chicago, IL", phone:"(312) 555-0182", website:"https://petalandstem.com", established:1998, specialties:["Weddings","Same-day delivery","Sympathy","Seasonal arrangements","Funeral flowers"], description:"Family-owned for over 25 years, Maria and her team handcraft every arrangement with seasonal blooms sourced from local growers whenever possible. What started as a small corner shop has grown into one of Lincoln Park's most beloved neighborhood institutions — but the personal touch has never changed.", hours:{Mon:"9am–6pm",Tue:"9am–6pm",Wed:"9am–6pm",Thu:"9am–6pm",Fri:"9am–7pm",Sat:"9am–5pm",Sun:"Closed"}, emoji:"🌸", color:"#e8f2e8", rating:4.9, reviews:312 },
+  { id:2, name:"Bloom & Co.", owner:"James & Theresa Park", address:"2210 W. Armitage Ave, Chicago, IL", phone:"(773) 555-0244", website:"https://bloomandco.com", established:2004, specialties:["Custom arrangements","Events","Subscriptions","Birthday flowers","Anniversary bouquets"], description:"Bloom & Co. believes flowers should tell a story. Every bouquet is a collaboration between the florist and the customer. James and Theresa Park founded the shop after years working in high-end floral design in New York — they brought that sophistication to Chicago's Bucktown neighborhood without the Manhattan price tag.", hours:{Mon:"10am–6pm",Tue:"10am–6pm",Wed:"10am–6pm",Thu:"10am–6pm",Fri:"10am–7pm",Sat:"10am–5pm",Sun:"11am–3pm"}, emoji:"🌺", color:"#faeae4", rating:4.8, reviews:198 },
+  { id:3, name:"The Garden Room", owner:"Eleanor Voss", address:"512 W. Diversey Pkwy, Chicago, IL", phone:"(312) 555-0371", website:"https://thegardenroom.com", established:1985, specialties:["Weddings","Corporate events","Floral design classes","Holiday decor","Large installations"], description:"Chicago's most beloved boutique florist since 1985. Eleanor has been designing flowers for four decades and still greets every customer personally. The Garden Room is a fixture of the Lakeview community — Eleanor has done flowers for thousands of weddings and has taught her craft to hundreds of students through her popular weekend workshops.", hours:{Mon:"9am–5pm",Tue:"9am–5pm",Wed:"9am–5pm",Thu:"9am–5pm",Fri:"9am–6pm",Sat:"9am–4pm",Sun:"Closed"}, emoji:"🌼", color:"#faf3e0", rating:5.0, reviews:487 },
+  { id:4, name:"Wildflower Workshop", owner:"Devon Achebe", address:"3104 N. Lincoln Ave, Chicago, IL", phone:"(773) 555-0509", website:"https://wildflowerworkshop.com", established:2016, specialties:["Dried flowers","Pressing & framing","Sustainability focus","Weekend workshops","Wildflower bouquets"], description:"Devon founded Wildflower Workshop to bring sustainably sourced, locally grown flowers to Chicago's north side. All flowers are sourced from within 150 miles of Chicago whenever the season allows. Devon also runs weekend workshops teaching pressing, drying, and arrangement — popular with both beginners and experienced flower lovers.", hours:{Mon:"Closed",Tue:"11am–6pm",Wed:"11am–6pm",Thu:"11am–6pm",Fri:"11am–7pm",Sat:"10am–5pm",Sun:"12pm–4pm"}, emoji:"🌻", color:"#f0f4e8", rating:4.7, reviews:143 }
+];
+
+const params = new URLSearchParams(window.location.search);
+const id = parseInt(params.get('id')) || 1;
+const f = FLORISTS.find(x => x.id === id) || FLORISTS[0];
+
+// Populate hero
+document.getElementById('heroIcon').textContent = f.emoji;
+document.getElementById('heroIcon').style.background = f.color;
+document.getElementById('shopName').textContent = f.name;
+document.getElementById('shopSub').textContent = f.address + ' · Est. ' + f.established;
+document.getElementById('phoneBtn').textContent = '📞 ' + f.phone;
+document.getElementById('statYears').textContent = (2025 - f.established) + ' yrs';
+document.getElementById('statRating').textContent = f.rating;
+document.getElementById('statReviews').textContent = f.reviews;
+
+// About
+document.getElementById('shopDesc').textContent = f.description;
+document.getElementById('ownerName').textContent = f.owner;
+
+// Contact sidebar
+document.getElementById('websiteLink').href = f.website;
+document.getElementById('phoneLink').href = 'tel:' + f.phone.replace(/\D/g,'');
+document.getElementById('phoneLink').textContent = f.phone;
+document.getElementById('addressSpan').textContent = f.address;
+document.getElementById('ratingNum').textContent = f.rating;
+document.getElementById('ratingStars').textContent = '★'.repeat(Math.round(f.rating)) + '☆'.repeat(5-Math.round(f.rating));
+document.getElementById('ratingCount').textContent = f.reviews + ' verified reviews';
+
+// Hours
+const days = Object.keys(f.hours);
+const todayIdx = new Date().getDay();
+const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const todayName = dayNames[todayIdx];
+const table = document.getElementById('hoursTable');
+days.forEach(d => {
+  const tr = document.createElement('tr');
+  const isToday = d.startsWith(todayName);
+  if (isToday) tr.className = 'today-row';
+  tr.innerHTML = `<td>${d}${isToday ? '<span class="today-badge">Today</span>' : ''}</td><td>${f.hours[d]}</td>`;
+  table.appendChild(tr);
+});
+
+// Specialties
+const grid = document.getElementById('specialtyGrid');
+f.specialties.forEach(s => {
+  const chip = document.createElement('div');
+  chip.className = 'specialty-chip';
+  chip.textContent = s;
+  grid.appendChild(chip);
+});
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function visitShop() {
+  window.open(f.website, '_blank');
+}
+</script>
+</body>
+</html>

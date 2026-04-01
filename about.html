@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowersByZip — Our Mission</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #1a3a2a; --green-mid: #2d5c3f; --sage: #7a9e7e;
+  --cream: #f5f0e8; --blush: #e8b4a0; --gold: #c9a84c;
+  --muted: #7a8a80; --border: rgba(26,58,42,0.1);
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--green); overflow-x: hidden; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(245,240,232,0.95); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--green); text-decoration: none; }
+.logo em { font-style: italic; color: var(--sage); }
+.nav-links { display: flex; gap: 1.5rem; list-style: none; }
+.nav-links a { font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--green); }
+.nav-cta {
+  background: var(--green); color: var(--cream); border: none;
+  padding: 0.5rem 1.2rem; border-radius: 2rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer;
+}
+
+/* HERO */
+.mission-hero {
+  padding-top: 64px; min-height: 70vh;
+  display: flex; align-items: center;
+  background: var(--green);
+  position: relative; overflow: hidden;
+}
+.mission-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(122,158,126,0.15) 0%, transparent 60%);
+}
+.mission-hero::after {
+  content: '✿ ✿ ✿';
+  position: absolute; bottom: -2rem; right: 3rem;
+  font-size: 8rem; color: rgba(255,255,255,0.04);
+  letter-spacing: 2rem; line-height: 1;
+}
+.hero-inner {
+  max-width: 860px; margin: 0 auto;
+  padding: 5rem 2.5rem;
+  position: relative; z-index: 1;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--sage); margin-bottom: 1.5rem;
+}
+.hero-tag::before { content: ''; width: 2rem; height: 1px; background: var(--sage); }
+.mission-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1.15; color: white; margin-bottom: 1.5rem;
+}
+.mission-hero h1 em { font-style: italic; color: var(--blush); }
+.mission-hero p {
+  font-size: 1.1rem; line-height: 1.8;
+  color: #b8ccbe; max-width: 620px;
+}
+
+/* THE PROBLEM */
+.problem-section {
+  padding: 6rem 2.5rem;
+  max-width: 960px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5rem; align-items: center;
+}
+.problem-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem); color: var(--green);
+  line-height: 1.3; margin-bottom: 1.2rem;
+}
+.problem-text p {
+  font-size: 0.95rem; line-height: 1.8;
+  color: #4a5a50; margin-bottom: 1rem;
+}
+
+/* FEE BREAKDOWN */
+.fee-breakdown {
+  background: var(--green); border-radius: 1.2rem; padding: 1.8rem; color: white;
+}
+.fee-breakdown h4 {
+  font-family: 'Playfair Display', serif; font-size: 1rem;
+  margin-bottom: 1.2rem; color: var(--blush); font-style: italic;
+}
+.fee-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.85rem;
+}
+.fee-row:last-child { border-bottom: none; }
+.fee-label { color: #b8ccbe; }
+.fee-amount { font-weight: 600; }
+.fee-amount.positive { color: #7ed87e; }
+.fee-amount.negative { color: var(--blush); }
+.fee-divider { height: 1px; background: rgba(255,255,255,0.2); margin: 0.6rem 0; }
+.fee-total {
+  display: flex; justify-content: space-between;
+  padding: 0.6rem 0 0;
+  font-weight: 600; font-size: 0.9rem;
+}
+.fee-total .fee-label { color: white; }
+
+/* SOLUTION */
+.solution-section {
+  background: #f0ece4;
+  padding: 5rem 2.5rem;
+}
+.solution-inner { max-width: 960px; margin: 0 auto; }
+.section-tag {
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--sage); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem;
+}
+.section-tag::before { content: ''; width: 2rem; height: 1px; background: var(--sage); }
+.solution-inner h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem); color: var(--green);
+  margin-bottom: 3rem;
+}
+.principles {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+}
+.principle {
+  background: white; border-radius: 1rem; padding: 1.5rem;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.principle:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(26,58,42,0.1); }
+.principle-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+.principle h3 {
+  font-family: 'Playfair Display', serif; font-size: 1rem;
+  color: var(--green); margin-bottom: 0.5rem;
+}
+.principle p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+/* NUMBERS */
+.numbers-section {
+  background: var(--blush); padding: 5rem 2.5rem;
+}
+.numbers-inner { max-width: 960px; margin: 0 auto; }
+.numbers-inner h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.2rem); color: var(--green);
+  margin-bottom: 3rem; text-align: center;
+}
+.numbers-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+}
+.number-card { text-align: center; }
+.number-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem; color: var(--green); line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.number-label { font-size: 0.82rem; color: #7a5a50; line-height: 1.5; }
+
+/* STORY SECTION */
+.story-section {
+  padding: 6rem 2.5rem;
+  max-width: 760px; margin: 0 auto;
+  text-align: center;
+}
+.story-section .section-tag { justify-content: center; }
+.story-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem); color: var(--green);
+  margin-bottom: 1.5rem;
+}
+.story-section p {
+  font-size: 0.95rem; line-height: 1.9; color: #4a5a50; margin-bottom: 1rem;
+}
+.story-quote {
+  background: var(--green); color: var(--cream);
+  border-radius: 1.2rem; padding: 2rem 2.5rem; margin: 2.5rem 0;
+  text-align: left; position: relative;
+}
+.story-quote::before {
+  content: '"'; font-family: 'Playfair Display', serif;
+  font-size: 5rem; color: var(--sage); opacity: 0.3;
+  position: absolute; top: -0.5rem; left: 1.5rem; line-height: 1;
+}
+.story-quote blockquote {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 1.1rem; line-height: 1.7; position: relative; z-index: 1;
+  color: white; margin-bottom: 0.8rem;
+}
+.story-quote cite { font-size: 0.82rem; color: var(--sage); font-style: normal; }
+
+/* CTA */
+.mission-cta {
+  background: var(--green); padding: 5rem 2.5rem; text-align: center; color: white;
+}
+.mission-cta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 2.8vw, 2.2rem); margin-bottom: 1rem;
+}
+.mission-cta p { font-size: 0.95rem; color: #b8ccbe; max-width: 480px; margin: 0 auto 2rem; line-height: 1.7; }
+.cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-cream {
+  background: var(--cream); color: var(--green); border: none;
+  padding: 0.85rem 2rem; border-radius: 2rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+}
+.btn-outline-cream {
+  background: transparent; color: var(--cream); border: 1.5px solid rgba(255,255,255,0.4);
+  padding: 0.85rem 2rem; border-radius: 2rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline-cream:hover { border-color: var(--cream); background: rgba(255,255,255,0.08); }
+
+footer {
+  background: var(--green); color: #88a890;
+  padding: 2rem 2.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.78rem; border-top: 1px solid rgba(255,255,255,0.08);
+}
+footer .logo { color: white; }
+
+@media (max-width: 720px) {
+  .problem-section { grid-template-columns: 1fr; gap: 2.5rem; }
+  .principles, .numbers-grid { grid-template-columns: 1fr 1fr; }
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+}
+@media (max-width: 480px) {
+  .principles, .numbers-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">flowers<em>by</em>zip</a>
+  <ul class="nav-links">
+    <li><a href="results.html">Find Florists</a></li>
+    <li><a href="about.html" class="active">Our Mission</a></li>
+    <li><a href="register.html">For Florists</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location='register.html'">List Your Shop</button>
+</nav>
+
+<!-- HERO -->
+<section class="mission-hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Our mission</div>
+    <h1>The flower industry<br>has a <em>middleman problem.</em><br>We're fixing it.</h1>
+    <p>FlowersByZip was built by a former independent florist who saw firsthand how wire services extract value from local shops — and the customers who love them. This is our attempt to fix that, one ZIP code at a time.</p>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section style="background:var(--cream);">
+  <div class="problem-section">
+    <div class="problem-text">
+      <h2>Where does your $75 bouquet actually go?</h2>
+      <p>When you order flowers through a company like Teleflora or FTD, you probably assume most of your money goes to the local florist who makes your arrangement. It doesn't.</p>
+      <p>Wire services charge shops monthly membership fees just to receive orders. Then they take a percentage of every order. Then there are "delivery fulfillment" charges, "technology fees," and required minimum order purchases from their own supplies.</p>
+      <p>By the time all the deductions clear, many florists are left with less than half of what you paid — to buy flowers, pay their staff, and cover their overhead.</p>
+    </div>
+    <div class="fee-breakdown">
+      <h4>A typical $75 flower order through a wire service</h4>
+      <div class="fee-row">
+        <span class="fee-label">Customer pays</span>
+        <span class="fee-amount positive">$75.00</span>
+      </div>
+      <div class="fee-divider"></div>
+      <div class="fee-row">
+        <span class="fee-label">Wire service order fee (~20%)</span>
+        <span class="fee-amount negative">– $15.00</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">Monthly membership (prorated)</span>
+        <span class="fee-amount negative">– $8.00</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">Fulfillment / tech fees</span>
+        <span class="fee-amount negative">– $4.50</span>
+      </div>
+      <div class="fee-row">
+        <span class="fee-label">Required supply purchases</span>
+        <span class="fee-amount negative">– $5.00</span>
+      </div>
+      <div class="fee-divider"></div>
+      <div class="fee-total">
+        <span class="fee-label">Florist actually receives</span>
+        <span class="fee-amount negative">$42.50</span>
+      </div>
+      <div style="margin-top:0.8rem;background:rgba(255,255,255,0.06);border-radius:0.5rem;padding:0.6rem 0.8rem;font-size:0.72rem;color:#88a890;line-height:1.5;">
+        That $42.50 must cover flowers, labor, packaging, and delivery — leaving many florists near or below cost.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution-section">
+  <div class="solution-inner">
+    <div class="section-tag">Our approach</div>
+    <h2>A directory built on one simple principle: connect people directly.</h2>
+    <div class="principles">
+      <div class="principle">
+        <div class="principle-icon">🏪</div>
+        <h3>Independent only</h3>
+        <p>Every shop listed is verified as independently owned and operated. No chains, no franchise operations, no wire-service-owned fronts.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-icon">🔗</div>
+        <h3>Direct links, always</h3>
+        <p>We link directly to each florist's own website. Your order goes straight to them — FlowersByZip never touches a transaction.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-icon">💸</div>
+        <h3>Zero commission</h3>
+        <p>We charge florists nothing. No listing fees, no per-order cuts, no monthly subscriptions. Our mission doesn't involve taking a piece of their pie.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-icon">📍</div>
+        <h3>Hyper-local</h3>
+        <p>A ZIP code connects you with florists who are truly nearby — shops that source locally, know your neighborhood, and care about their community.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-icon">📖</div>
+        <h3>Education-first</h3>
+        <p>We believe customers who understand what wire services cost florists will choose differently. So we make sure they know.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-icon">🌱</div>
+        <h3>Built to last</h3>
+        <p>We're not a venture-funded startup optimizing for exits. We're a tool built to serve a community, maintained by people who care about independent florists.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="numbers-section">
+  <div class="numbers-inner">
+    <h2>The numbers behind the problem</h2>
+    <div class="numbers-grid">
+      <div class="number-card">
+        <div class="number-big">$2B+</div>
+        <div class="number-label">Extracted annually from florists by wire service fees and commissions</div>
+      </div>
+      <div class="number-card">
+        <div class="number-big">~40%</div>
+        <div class="number-label">Average cut taken from a typical flower order before the florist sees it</div>
+      </div>
+      <div class="number-card">
+        <div class="number-big">15,000</div>
+        <div class="number-label">Independent flower shops in the US that have closed in the past 20 years</div>
+      </div>
+      <div class="number-card">
+        <div class="number-big">100%</div>
+        <div class="number-label">Of your order that goes directly to the florist when you order through FlowersByZip</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story-section">
+  <div class="section-tag">The origin story</div>
+  <h2>This started with a flower shop and a lot of frustration.</h2>
+  <p>The founder of FlowersByZip spent years running an independent flower shop. The work was joyful — designing arrangements, knowing regulars by name, being part of people's most important moments.</p>
+  <p>But the business side was a constant battle. Wire service reps called regularly, promising "more orders." What they didn't mention up front was the monthly fees, the required inventory purchases, the percentage cut on every single transaction.</p>
+  <div class="story-quote">
+    <blockquote>I watched good florists — people who had been in their communities for decades — struggling to survive not because customers didn't want flowers, but because the systems supposed to help them were quietly bleeding them dry.</blockquote>
+    <cite>— FlowersByZip Founder</cite>
+  </div>
+  <p>FlowersByZip isn't about disruption or technology for its own sake. It's a directory. It's a tool. It exists to make one thing easier: for someone who wants flowers to find a real florist nearby and order from them directly.</p>
+  <p>That's it. That's the whole thing.</p>
+</section>
+
+<!-- CTA -->
+<section class="mission-cta">
+  <h2>Be part of the change.</h2>
+  <p>Whether you're a customer who wants to order direct or a florist who deserves to keep what you earn — FlowersByZip is for you.</p>
+  <div class="cta-buttons">
+    <button class="btn-cream" onclick="window.location='index.html'">Find Florists Near Me</button>
+    <button class="btn-outline-cream" onclick="window.location='register.html'">List My Shop — Free</button>
+  </div>
+</section>
+
+<footer>
+  <a class="logo" href="index.html">flowers<em style="font-style:italic;color:var(--sage);">by</em>zip</a>
+  <div>Built for independent florists · No wire service affiliations</div>
+  <div>flowersbyzip.com</div>
+</footer>
+
+</body>
+</html>
