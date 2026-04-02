@@ -327,9 +327,9 @@ nav {
             <input type="tel" id="phone" name="Phone" placeholder="(555) 000-0000" />
           </div>
           <div class="form-field">
-            <label>Email Address *</label>
+            <label>Email Address</label>
             <input type="email" id="email" name="Email" placeholder="you@yourshop.com" />
-            <div class="field-hint">Not shown publicly.</div>
+            <div class="field-hint">Optional — not shown publicly.</div>
           </div>
           <div class="form-field">
             <label>Year Established</label>
@@ -576,8 +576,8 @@ function submitForm() {
   };
 
   // Validate required fields
-  if (!data['Shop Name'] || !data['Email'] || !data['ZIP Code']) {
-    alert('Please go back and fill in Shop Name, Email, and ZIP Code before submitting.');
+  if (!data['Shop Name'] || !data['ZIP Code']) {
+    alert('Please go back and fill in at least the Shop Name and ZIP Code before submitting.');
     return;
   }
 
