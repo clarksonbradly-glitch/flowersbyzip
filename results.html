@@ -292,59 +292,44 @@ function dropCenterPin(center) {
 
 function searchNearby(center) {
   const miles = parseInt(document.getElementById('radiusSlider').value);
-  const meters = miles * 1609;
 
   if (radiusCircle) radiusCircle.setMap(null);
   radiusCircle = new google.maps.Circle({
-    map: map,
-    center: center,
-    radius: meters,
-    strokeColor: '#2d5c3f',
-    strokeOpacity: 0.25,
-    strokeWeight: 2,
-    fillColor: '#2d5c3f',
-    fillOpacity: 0.04
+    map: map, center: center, radius: miles * 1609,
+    strokeColor: '#2d5c3f', strokeOpacity: 0.25, strokeWeight: 2,
+    fillColor: '#2d5c3f', fillOpacity: 0.04
   });
 
-  placesService.nearbySearch({
-    location: center,
-    radius: meters,
-    keyword: 'florist',
-    type: 'florist'
-  }, function(results, status) {
-    clearMarkers();
-    if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-      currentFlorists = results.map(function(place, i) {
-        const distMeters = google.maps.geometry.spherical.computeDistanceBetween(
-          new google.maps.LatLng(center.lat, center.lng),
-          place.geometry.location
-        );
-        return {
-          id: i + 1,
-          name: place.name,
-          address: place.vicinity || '',
-          city: '',
-          website: '#',
-          rating: place.rating || 0,
-          reviews: place.user_ratings_total || 0,
-          specialties: ['Florist'],
-          sameDay: false,
-          emoji: EMOJIS[i % EMOJIS.length],
-          color: COLORS[i % COLORS.length],
-          distance: parseFloat((distMeters / 1609).toFixed(1)),
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-          placeId: place.place_id
-        };
-      }).sort(function(a, b) { return a.distance - b.distance; });
+  document.getElementById('floristList').innerHTML =
+    '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">🦉 Zip is finding independent florists near you…</div>';
 
+  // Call Vercel API → queries Airtable for Approved florists only
+  fetch('/api/florists?lat=' + center.lat + '&lng=' + center.lng + '&radius=' + miles)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      clearMarkers();
+      if (data.florists && data.florists.length > 0) {
+        currentFlorists = data.florists;
+        applyFilter();
+        plotMarkers();
+      } else {
+        document.getElementById('resultsMeta').textContent = 'No independent florists listed here yet';
+        document.getElementById('floristList').innerHTML =
+          '<div style="text-align:center;padding:2rem;color:var(--muted);">' +
+          '<div style="font-size:2rem;margin-bottom:0.8rem">🦉</div>' +
+          '<strong style="color:var(--green);display:block;margin-bottom:0.5rem">Zip says:</strong>' +
+          'No independent florists are listed in this area yet.<br><br>' +
+          'Are you a florist here? <a href="register.html" style="color:var(--green);font-weight:600">List your shop free →</a>' +
+          '</div>';
+      }
+    })
+    .catch(function() {
+      // Fallback to demo data if API unavailable
+      document.getElementById('resultsMeta').textContent = 'Showing demo results · Connect to go live';
+      currentFlorists = FLORISTS_DEMO;
       applyFilter();
       plotMarkers();
-    } else {
-      document.getElementById('resultsMeta').textContent = 'Hmm, Zip couldn't find any florists there — try increasing the radius or searching a nearby city.';
-      document.getElementById('floristList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Zip couldn't find any florists within ' + miles + ' miles. Try increasing the radius.</div>';
-    }
-  });
+    });
 }
 
 function clearMarkers() {
