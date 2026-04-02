@@ -8,300 +8,100 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --green: #1a3a2a;
-  --green-mid: #2d5c3f;
-  --sage: #7a9e7e;
-  --cream: #f5f0e8;
-  --blush: #e8b4a0;
-  --gold: #c9a84c;
-  --white: #ffffff;
-  --text: #1a1a1a;
-  --muted: #7a8a80;
+  --green: #1a3a2a; --green-mid: #2d5c3f; --sage: #7a9e7e;
+  --cream: #f5f0e8; --blush: #e8b4a0; --gold: #c9a84c;
+  --white: #ffffff; --text: #1a1a1a; --muted: #7a8a80;
   --border: rgba(26,58,42,0.1);
 }
 html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow: hidden; }
 
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 64px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem;
-  background: rgba(245,240,232,0.95); backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-}
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; background: rgba(245,240,232,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
 .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--green); text-decoration: none; }
 .logo em { font-style: italic; color: var(--sage); }
-
-/* SEARCH BAR in nav */
-.nav-search {
-  display: flex; align-items: center;
-  background: white; border: 1.5px solid var(--green);
-  border-radius: 2rem; padding: 0.3rem 0.3rem 0.3rem 1rem;
-  gap: 0.5rem; min-width: 280px;
-}
-.nav-search input {
-  border: none; outline: none; font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem; letter-spacing: 0.08em; color: var(--green);
-  background: transparent; width: 100%;
-}
+.nav-search { display: flex; align-items: center; background: white; border: 1.5px solid var(--green); border-radius: 2rem; padding: 0.3rem 0.3rem 0.3rem 1rem; gap: 0.5rem; min-width: 280px; }
+.nav-search input { border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; color: var(--green); background: transparent; width: 100%; }
 .nav-search input::placeholder { color: #aab8af; }
-.nav-search-btn {
-  background: var(--green); color: var(--cream);
-  border: none; border-radius: 1.5rem; padding: 0.45rem 1rem;
-  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-}
-
-.nav-cta {
-  background: none; border: 1.5px solid var(--green); color: var(--green);
-  padding: 0.45rem 1.1rem; border-radius: 2rem;
-  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500;
-  cursor: pointer; transition: all 0.2s;
-}
+.nav-search-btn { background: var(--green); color: var(--cream); border: none; border-radius: 1.5rem; padding: 0.45rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.nav-cta { background: none; border: 1.5px solid var(--green); color: var(--green); padding: 0.45rem 1.1rem; border-radius: 2rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
 .nav-cta:hover { background: var(--green); color: var(--cream); }
 
-/* LAYOUT */
-.app-layout {
-  display: grid;
-  grid-template-columns: 420px 1fr;
-  height: 100vh;
-  padding-top: 64px;
-}
+.app-layout { display: grid; grid-template-columns: 420px 1fr; height: 100vh; padding-top: 64px; }
 
-/* LEFT PANEL */
-.results-panel {
-  overflow-y: auto;
-  background: var(--cream);
-  border-right: 1px solid var(--border);
-  padding: 1.5rem;
-}
+.results-panel { overflow-y: auto; background: var(--cream); border-right: 1px solid var(--border); padding: 1.5rem; }
 .results-panel::-webkit-scrollbar { width: 4px; }
 .results-panel::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 2px; }
-
 .results-header { margin-bottom: 1.2rem; }
-.results-header h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem; color: var(--green); margin-bottom: 0.3rem;
-}
+.results-header h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--green); margin-bottom: 0.3rem; }
 .results-meta { font-size: 0.82rem; color: var(--muted); }
 
-/* FILTERS */
-.filters {
-  display: flex; gap: 0.5rem; flex-wrap: wrap;
-  margin-bottom: 1.2rem;
-}
-.filter-chip {
-  background: white; border: 1.5px solid var(--border);
-  border-radius: 2rem; padding: 0.35rem 0.9rem;
-  font-size: 0.78rem; font-weight: 500; cursor: pointer;
-  color: var(--green-mid); transition: all 0.15s;
-  white-space: nowrap;
-}
-.filter-chip:hover, .filter-chip.active {
-  background: var(--green); color: var(--cream); border-color: var(--green);
-}
+.filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.filter-chip { background: white; border: 1.5px solid var(--border); border-radius: 2rem; padding: 0.35rem 0.9rem; font-size: 0.78rem; font-weight: 500; cursor: pointer; color: var(--green-mid); transition: all 0.15s; white-space: nowrap; }
+.filter-chip:hover, .filter-chip.active { background: var(--green); color: var(--cream); border-color: var(--green); }
 
-/* RADIUS SLIDER */
-.radius-control {
-  background: white; border-radius: 0.8rem; padding: 0.9rem 1rem;
-  margin-bottom: 1.2rem; border: 1px solid var(--border);
-}
-.radius-label {
-  display: flex; justify-content: space-between;
-  font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem;
-}
+.radius-control { background: white; border-radius: 0.8rem; padding: 0.9rem 1rem; margin-bottom: 1.2rem; border: 1px solid var(--border); }
+.radius-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
 .radius-label span { font-weight: 600; color: var(--green); }
-input[type=range] {
-  width: 100%; accent-color: var(--green);
-}
+input[type=range] { width: 100%; accent-color: var(--green); }
 
-/* FLORIST CARD */
-.florist-card {
-  background: white; border-radius: 1.1rem;
-  border: 1.5px solid transparent;
-  padding: 1.2rem; margin-bottom: 0.8rem;
-  cursor: pointer; transition: all 0.2s;
-  animation: fadeSlideIn 0.4s ease both;
-}
-.florist-card:hover, .florist-card.selected {
-  border-color: var(--sage);
-  box-shadow: 0 4px 20px rgba(26,58,42,0.1);
-  transform: translateX(3px);
-}
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.florist-card:nth-child(2) { animation-delay: 0.07s; }
-.florist-card:nth-child(3) { animation-delay: 0.14s; }
-.florist-card:nth-child(4) { animation-delay: 0.21s; }
-
+.florist-card { background: white; border-radius: 1.1rem; border: 1.5px solid transparent; padding: 1.2rem; margin-bottom: 0.8rem; cursor: pointer; transition: all 0.2s; animation: fadeSlideIn 0.4s ease both; }
+.florist-card:hover, .florist-card.selected { border-color: var(--sage); box-shadow: 0 4px 20px rgba(26,58,42,0.1); transform: translateX(3px); }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .card-top { display: flex; align-items: flex-start; gap: 0.9rem; margin-bottom: 0.8rem; }
-.card-icon {
-  width: 50px; height: 50px; border-radius: 0.7rem;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.4rem; flex-shrink: 0;
-}
+.card-icon { width: 50px; height: 50px; border-radius: 0.7rem; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
 .card-title-row { flex: 1; }
-.card-title-row h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1rem; color: var(--green); margin-bottom: 0.2rem;
-}
+.card-title-row h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--green); margin-bottom: 0.2rem; }
 .card-address { font-size: 0.78rem; color: var(--muted); }
-.card-distance {
-  font-size: 0.78rem; font-weight: 600; color: var(--sage);
-  background: #eef4ee; padding: 0.2rem 0.6rem; border-radius: 1rem;
-  white-space: nowrap; flex-shrink: 0;
-}
-
+.card-distance { font-size: 0.78rem; font-weight: 600; color: var(--sage); background: #eef4ee; padding: 0.2rem 0.6rem; border-radius: 1rem; white-space: nowrap; flex-shrink: 0; }
 .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
-.tag {
-  font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 1rem;
-  background: var(--cream); color: var(--green-mid); font-weight: 500;
-}
+.tag { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 1rem; background: var(--cream); color: var(--green-mid); font-weight: 500; }
 .tag.same-day { background: #e8f2e8; color: var(--green-mid); }
-
 .card-bottom { display: flex; align-items: center; justify-content: space-between; }
 .card-rating { display: flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--muted); }
-.stars { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.05em; }
+.stars { color: var(--gold); font-size: 0.7rem; }
 .card-actions { display: flex; gap: 0.5rem; }
-.btn-sm {
-  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
-  padding: 0.4rem 0.9rem; border-radius: 1.5rem; cursor: pointer;
-  transition: all 0.15s; border: none;
-}
+.btn-sm { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 1.5rem; cursor: pointer; transition: all 0.15s; border: none; }
 .btn-visit { background: var(--green); color: var(--cream); }
 .btn-visit:hover { background: var(--green-mid); }
 .btn-profile { background: white; color: var(--green); border: 1.5px solid var(--border); }
 .btn-profile:hover { border-color: var(--sage); }
+.btn-report { background: none; border: none; font-size: 0.7rem; color: #bbb; cursor: pointer; padding: 0.2rem 0.4rem; font-family: 'DM Sans', sans-serif; margin-left: 0.2rem; }
+.btn-report:hover { color: #e84040; }
 
-/* MISSION CALLOUT */
-.mission-callout {
-  background: var(--green); color: var(--cream);
-  border-radius: 1rem; padding: 1.2rem;
-  margin-top: 1rem;
-}
-.mission-callout h4 {
-  font-family: 'Playfair Display', serif; font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-}
+.mission-callout { background: var(--green); color: var(--cream); border-radius: 1rem; padding: 1.2rem; margin-top: 1rem; }
+.mission-callout h4 { font-family: 'Playfair Display', serif; font-size: 0.95rem; margin-bottom: 0.5rem; }
 .mission-callout p { font-size: 0.78rem; line-height: 1.6; color: #b8ccbe; }
-.mission-stat {
-  display: flex; gap: 1.2rem; margin-top: 0.8rem;
-}
+.mission-stat { display: flex; gap: 1.2rem; margin-top: 0.8rem; }
 .mstat { text-align: center; }
 .mstat-num { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--blush); }
 .mstat-label { font-size: 0.65rem; color: #88a890; margin-top: 0.1rem; line-height: 1.3; }
 
-/* MAP PANEL */
-.map-panel {
-  position: relative; overflow: hidden;
-  background: #e8ede8;
-}
-
-/* Simulated map */
-.map-bg {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(rgba(232,237,232,0.7), rgba(232,237,232,0.7)),
-    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(26,58,42,0.04) 60px, rgba(26,58,42,0.04) 61px),
-    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(26,58,42,0.04) 60px, rgba(26,58,42,0.04) 61px);
-}
-
-/* Fake roads */
-.map-road {
-  position: absolute; background: white;
-  border-radius: 4px; opacity: 0.7;
-}
-
-.map-label {
-  position: absolute; font-size: 0.65rem; color: #7a8a80;
-  font-weight: 500; letter-spacing: 0.05em; white-space: nowrap;
-}
-
-/* Map pins */
-.map-pin {
-  position: absolute; transform: translate(-50%, -100%);
-  cursor: pointer; transition: transform 0.2s;
-  z-index: 10;
-}
-.map-pin:hover, .map-pin.active { transform: translate(-50%, -100%) scale(1.15); z-index: 20; }
-.pin-bubble {
-  background: var(--green); color: var(--cream);
-  border-radius: 0.8rem 0.8rem 0.8rem 0;
-  padding: 0.4rem 0.8rem;
-  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
-  white-space: nowrap;
-  box-shadow: 0 4px 16px rgba(26,58,42,0.3);
-  display: flex; align-items: center; gap: 0.3rem;
-}
-.pin-bubble.selected {
-  background: var(--gold); color: var(--green);
-}
-.pin-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: currentColor; opacity: 0.7;
-}
-
-/* You are here pin */
-.you-pin {
-  position: absolute; transform: translate(-50%, -50%); z-index: 5;
-}
-.you-dot {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: #4a90d9; border: 3px solid white;
-  box-shadow: 0 0 0 6px rgba(74,144,217,0.2), 0 2px 8px rgba(0,0,0,0.2);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 6px rgba(74,144,217,0.2), 0 2px 8px rgba(0,0,0,0.2); }
-  50% { box-shadow: 0 0 0 12px rgba(74,144,217,0.1), 0 2px 8px rgba(0,0,0,0.2); }
-}
-
-/* Radius circle */
-.radius-circle {
-  position: absolute;
-  border: 2px dashed rgba(26,58,42,0.25);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: width 0.4s, height 0.4s;
-}
-
-/* Map popup */
-.map-popup {
-  position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-  background: white; border-radius: 1rem; padding: 1rem 1.2rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-  min-width: 260px; z-index: 30;
-  display: none; animation: popupIn 0.2s ease;
-}
+.map-panel { position: relative; overflow: hidden; }
+.map-popup { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: white; border-radius: 1rem; padding: 1rem 1.2rem; box-shadow: 0 8px 32px rgba(0,0,0,0.15); min-width: 260px; z-index: 30; display: none; animation: popupIn 0.2s ease; }
 .map-popup.visible { display: block; }
-@keyframes popupIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-.popup-name {
-  font-family: 'Playfair Display', serif; font-size: 1rem;
-  color: var(--green); margin-bottom: 0.3rem;
-}
+@keyframes popupIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+.popup-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--green); margin-bottom: 0.3rem; }
 .popup-detail { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.7rem; }
 .popup-actions { display: flex; gap: 0.5rem; }
 
-/* Map credits */
-.map-credit {
-  position: absolute; bottom: 0.5rem; right: 0.8rem;
-  font-size: 0.65rem; color: #aab8af;
-}
-.map-note {
-  position: absolute; top: 1rem; right: 1rem;
-  background: white; border-radius: 0.5rem; padding: 0.4rem 0.7rem;
-  font-size: 0.72rem; color: var(--muted);
-  border: 1px solid var(--border);
-}
+/* REPORT MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: white; border-radius: 1.2rem; padding: 1.8rem; width: 90%; max-width: 400px; animation: modalIn 0.2s ease; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.modal h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--green); margin-bottom: 0.3rem; }
+.modal p { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.2rem; }
+.report-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem; }
+.report-option { display: flex; align-items: center; gap: 0.6rem; background: var(--cream); border: 1.5px solid var(--border); border-radius: 0.6rem; padding: 0.6rem 0.9rem; cursor: pointer; transition: all 0.15s; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; }
+.report-option:hover, .report-option.selected { border-color: var(--sage); background: #eef4ee; }
+.report-comment { width: 100%; border: 1.5px solid var(--border); border-radius: 0.6rem; padding: 0.6rem 0.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; resize: none; height: 70px; outline: none; margin-bottom: 1rem; }
+.report-comment:focus { border-color: var(--sage); }
+.modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+.btn-cancel { background: none; border: 1.5px solid var(--border); color: var(--muted); padding: 0.5rem 1.1rem; border-radius: 1.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; }
+.btn-submit-report { background: var(--green); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 1.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; }
+.report-success { text-align: center; padding: 1rem 0; }
+.report-success .check { font-size: 2rem; margin-bottom: 0.5rem; }
+.report-success p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
 
-/* Responsive */
 @media (max-width: 800px) {
   .app-layout { grid-template-columns: 1fr; grid-template-rows: auto 350px; overflow: hidden; }
   .results-panel { overflow-y: auto; height: auto; max-height: 55vh; }
@@ -309,14 +109,18 @@ input[type=range] {
   body { overflow: auto; }
   html, body { height: auto; }
 }
+
+  .owl-tip { display:flex; align-items:flex-end; gap:0.8rem; background:white; border-radius:1rem; padding:1rem 1.2rem; margin-bottom:1rem; border:1px solid rgba(26,58,42,0.08); box-shadow:0 2px 12px rgba(26,58,42,0.06); }
+  .owl-tip-text { font-size:0.82rem; line-height:1.6; color:#4a5a50; flex:1; }
+  .owl-tip-text strong { color:#1a3a2a; }
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="logo" href="index.html">flowers<em>by</em>zip</a>
+  <a class="logo" href="index.html" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><svg width="36" height="36" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/><line x1="62" y1="146" x2="52" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="62" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="72" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="88" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="98" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="108" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/></svg>flowers<em>by</em>zip</a>
   <div class="nav-search">
-    <input type="text" id="zipInput" value="60614" placeholder="ZIP code…" maxlength="5" />
+    <input type="text" id="zipInput" placeholder="ZIP code or city, state…" />
     <button class="nav-search-btn" onclick="doSearch()">Search</button>
   </div>
   <button class="nav-cta" onclick="window.location='register.html'">List Your Shop</button>
@@ -327,27 +131,27 @@ input[type=range] {
   <!-- LEFT: RESULTS -->
   <div class="results-panel">
     <div class="results-header">
-      <h2>Florists near <span id="zipDisplay">60614</span></h2>
-      <div class="results-meta" id="resultsMeta">4 independent shops · within 5 miles</div>
+      <h2>Florists near <span id="zipDisplay">—</span></h2>
+      <div class="results-meta" id="resultsMeta">Enter a ZIP code to search</div>
     </div>
-
     <div class="filters">
       <div class="filter-chip active" onclick="toggleFilter(this,'all')">All shops</div>
       <div class="filter-chip" onclick="toggleFilter(this,'sameday')">Same-day delivery</div>
       <div class="filter-chip" onclick="toggleFilter(this,'weddings')">Weddings</div>
-      <div class="filter-chip" onclick="toggleFilter(this,'open')">Open now</div>
     </div>
-
     <div class="radius-control">
       <div class="radius-label">Search radius: <span id="radiusVal">5 miles</span></div>
       <input type="range" min="1" max="25" value="5" id="radiusSlider" oninput="updateRadius(this.value)" />
     </div>
-
-    <div id="floristList"></div>
-
-    <div class="mission-callout">
+    <div id="floristList"><div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.9rem;">Enter a ZIP code above to find florists near you 🌸</div></div>
+    
+    <div class="owl-tip">
+      <svg width="64" height="64" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M57,126 Q65,117 73,126 Q81,117 89,126 Q97,117 105,126" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/><circle cx="80" cy="98" r="4" fill="#e8b4a0"/><circle cx="74" cy="93" r="3" fill="#7a9e7e"/><circle cx="86" cy="93" r="3" fill="#7a9e7e"/><circle cx="80" cy="88" r="3" fill="#7a9e7e"/><line x1="62" y1="146" x2="52" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="62" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="72" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="88" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="98" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="108" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/></svg>
+      <div class="owl-tip-text"><strong>Zip says:</strong> Every shop listed here is <strong>independently owned</strong>. Click "Visit Shop" to order directly — 100% of your money goes straight to them. 🦉</div>
+    </div>
+<div class="mission-callout">
       <h4>Why order direct?</h4>
-      <p>Wire services like Teleflora & FTD take up to 40% of your order before the florist sees a cent — plus monthly membership fees. Ordering directly means your full dollar supports a local business.</p>
+      <p>Wire services like wire service providers take up to 40% of your order before the florist sees a cent. Ordering directly means your full dollar supports a local business.</p>
       <div class="mission-stat">
         <div class="mstat"><div class="mstat-num">40%</div><div class="mstat-label">taken by wire services</div></div>
         <div class="mstat"><div class="mstat-num">$200+</div><div class="mstat-label">monthly fees charged</div></div>
@@ -356,40 +160,9 @@ input[type=range] {
     </div>
   </div>
 
-  <!-- RIGHT: MAP -->
+  <!-- RIGHT: REAL GOOGLE MAP -->
   <div class="map-panel" id="mapPanel">
-    <div class="map-bg"></div>
-
-    <!-- Decorative roads -->
-    <div class="map-road" style="width:3px;height:100%;top:0;left:38%;opacity:0.5;"></div>
-    <div class="map-road" style="width:3px;height:100%;top:0;left:62%;opacity:0.5;"></div>
-    <div class="map-road" style="width:5px;height:100%;top:0;left:50%;opacity:0.6;"></div>
-    <div class="map-road" style="height:3px;width:100%;left:0;top:30%;opacity:0.5;"></div>
-    <div class="map-road" style="height:3px;width:100%;left:0;top:55%;opacity:0.5;"></div>
-    <div class="map-road" style="height:5px;width:100%;left:0;top:42%;opacity:0.6;"></div>
-    <div class="map-road" style="height:2px;width:40%;left:10%;top:68%;opacity:0.4;"></div>
-    <div class="map-road" style="width:2px;height:30%;top:60%;left:25%;opacity:0.4;"></div>
-
-    <!-- Street labels -->
-    <div class="map-label" style="top:40%;left:52%;transform:rotate(90deg)">N. Halsted St</div>
-    <div class="map-label" style="top:41%;left:15%">W. Diversey Pkwy</div>
-    <div class="map-label" style="top:29%;left:15%">W. Armitage Ave</div>
-
-    <!-- Radius circle -->
-    <div class="radius-circle" id="radiusCircle" style="width:260px;height:260px;left:50%;top:50%;"></div>
-
-    <!-- You are here -->
-    <div class="you-pin" style="left:50%;top:50%;" title="Your ZIP location">
-      <div class="you-dot"></div>
-    </div>
-
-    <!-- Map pins will be injected by JS -->
-    <div id="mapPins"></div>
-
-    <div class="map-note">📍 Approximate layout · Real map via Google Maps API</div>
-    <div class="map-credit">Demo visualization · flowersbyzip.com</div>
-
-    <!-- Map popup -->
+    <div id="googleMap" style="width:100%;height:100%;"></div>
     <div class="map-popup" id="mapPopup">
       <div class="popup-name" id="popupName">—</div>
       <div class="popup-detail" id="popupDetail">—</div>
@@ -402,145 +175,337 @@ input[type=range] {
 
 </div>
 
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal">
+    <div id="reportForm">
+      <h3>🚩 Report this listing</h3>
+      <p id="reportingShopName" style="font-weight:600;color:var(--green);margin-bottom:0.5rem;font-size:0.88rem;"></p>
+      <p>Help us keep FlowersByZip independent-only. What's the issue?</p>
+      <div class="report-options">
+        <button class="report-option" onclick="selectReason(this,'not-independent')">🏢 This is a wire service or not independent</button>
+        <button class="report-option" onclick="selectReason(this,'wrong-info')">📋 Wrong information (address, phone, etc.)</button>
+        <button class="report-option" onclick="selectReason(this,'closed')">🔒 This shop is permanently closed</button>
+        <button class="report-option" onclick="selectReason(this,'other')">💬 Other issue</button>
+      </div>
+      <textarea class="report-comment" id="reportComment" placeholder="Any additional details (optional)…"></textarea>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeReport()">Cancel</button>
+        <button class="btn-submit-report" onclick="submitReport()">Submit Report</button>
+      </div>
+    </div>
+    <div class="report-success" id="reportSuccess" style="display:none">
+      <div class="check">✅</div>
+      <p>Thank you for your report. We'll review this listing within 24 hours and take action if needed.<br><br>You're helping keep FlowersByZip genuinely independent.</p>
+      <button class="btn-submit-report" onclick="closeReport()" style="margin-top:1rem">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&callback=initMap" async defer></script>
+
 <script>
-const FLORISTS = [
-  { id:1, name:"Petal & Stem Studio", owner:"Maria Gonzalez", address:"1842 N. Halsted St", city:"Chicago, IL", phone:"(312) 555-0182", website:"#", established:1998, specialties:["Weddings","Same-day delivery","Sympathy"], emoji:"🌸", color:"#e8f2e8", sameDay:true, rating:4.9, reviews:312, distance:0.4, pinLeft:"50%", pinTop:"50%" },
-  { id:2, name:"Bloom & Co.", owner:"James & Theresa Park", address:"2210 W. Armitage Ave", city:"Chicago, IL", phone:"(773) 555-0244", website:"#", established:2004, specialties:["Custom arrangements","Events","Subscriptions"], emoji:"🌺", color:"#faeae4", sameDay:false, rating:4.8, reviews:198, distance:1.1, pinLeft:"28%", pinTop:"30%" },
-  { id:3, name:"The Garden Room", owner:"Eleanor Voss", address:"512 W. Diversey Pkwy", city:"Chicago, IL", phone:"(312) 555-0371", website:"#", established:1985, specialties:["Weddings","Corporate","Floral design classes"], emoji:"🌼", color:"#faf3e0", sameDay:true, rating:5.0, reviews:487, distance:1.8, pinLeft:"35%", pinTop:"62%" },
-  { id:4, name:"Wildflower Workshop", owner:"Devon Achebe", address:"3104 N. Lincoln Ave", city:"Chicago, IL", phone:"(773) 555-0509", website:"#", established:2016, specialties:["Dried flowers","Workshops","Sustainable sourcing"], emoji:"🌻", color:"#f0f4e8", sameDay:false, rating:4.7, reviews:143, distance:2.3, pinLeft:"68%", pinTop:"24%" }
+let map, geocoder, placesService;
+let selectedId = null, activeFilter = 'all';
+let currentFlorists = [], currentMarkers = [];
+let centerMarker = null, radiusCircle = null;
+let reportingFlorist = null, selectedReason = null;
+
+const EMOJIS = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
+const COLORS = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
+
+const MAP_STYLE = [
+  { featureType:'poi', elementType:'labels', stylers:[{visibility:'off'}] },
+  { featureType:'transit', elementType:'labels', stylers:[{visibility:'off'}] },
+  { featureType:'water', stylers:[{color:'#c9e8d1'}] },
+  { featureType:'landscape', stylers:[{color:'#f5f0e8'}] },
+  { featureType:'road', elementType:'geometry', stylers:[{color:'#ffffff'}] },
+  { featureType:'road.arterial', elementType:'geometry', stylers:[{color:'#f0ebe0'}] },
 ];
 
-let selectedId = null;
-let activeFilter = 'all';
+function initMap() {
+  geocoder = new google.maps.Geocoder();
+  map = new google.maps.Map(document.getElementById('googleMap'), {
+    zoom: 11,
+    center: { lat: 39.5, lng: -98.35 },
+    styles: MAP_STYLE,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+  });
+  placesService = new google.maps.places.PlacesService(map);
 
-function stars(r) {
-  const full = Math.floor(r); const half = r % 1 >= 0.5;
-  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - (half?1:0));
+  // Read ZIP from URL
+  const params = new URLSearchParams(window.location.search);
+  const zip = params.get('zip');
+  if (zip) {
+    document.getElementById('zipInput').value = zip;
+    document.getElementById('zipDisplay').textContent = zip;
+    geocodeAndSearch(zip);
+  }
 }
 
-function renderCards(data) {
-  const list = document.getElementById('floristList');
-  list.innerHTML = '';
-  data.forEach((f,i) => {
-    const card = document.createElement('div');
-    card.className = 'florist-card' + (f.id === selectedId ? ' selected' : '');
-    card.style.animationDelay = (i * 0.07) + 's';
-    card.innerHTML = `
-      <div class="card-top">
-        <div class="card-icon" style="background:${f.color}">${f.emoji}</div>
-        <div class="card-title-row">
-          <h3>${f.name}</h3>
-          <div class="card-address">${f.address} · ${f.city}</div>
-        </div>
-        <div class="card-distance">${f.distance} mi</div>
-      </div>
-      <div class="card-tags">
-        ${f.sameDay ? '<span class="tag same-day">⚡ Same-day</span>' : ''}
-        ${f.specialties.map(s=>`<span class="tag">${s}</span>`).join('')}
-      </div>
-      <div class="card-bottom">
-        <div class="card-rating">
-          <span class="stars">${'★'.repeat(Math.floor(f.rating))}</span>
-          ${f.rating} (${f.reviews})
-        </div>
-        <div class="card-actions">
-          <button class="btn-sm btn-profile" onclick="event.stopPropagation();openProfilePage(${f.id})">Profile</button>
-          <button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop('${f.website}')">Visit Shop →</button>
-        </div>
-      </div>`;
-    card.onclick = () => selectFlorist(f.id);
-    list.appendChild(card);
+function geocodeAndSearch(zip) {
+  document.getElementById('resultsMeta').textContent = 'Searching…';
+  document.getElementById('zipDisplay').textContent = zip;
+  document.getElementById('floristList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">Finding florists near ' + zip + '…</div>';
+
+  geocoder.geocode({ address: zip + ', USA' }, function(results, status) {
+    if (status === 'OK' && results[0]) {
+      const loc = results[0].geometry.location;
+      const center = { lat: loc.lat(), lng: loc.lng() };
+      map.setCenter(center);
+      map.setZoom(13);
+      dropCenterPin(center);
+      searchNearby(center);
+    } else {
+      document.getElementById('resultsMeta').textContent = 'ZIP code not found — please try again';
+      document.getElementById('floristList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Zip couldn't find that location. Please try a different ZIP code or city name.</div>';
+    }
   });
 }
 
-function renderPins(data) {
-  const container = document.getElementById('mapPins');
-  container.innerHTML = '';
-  data.forEach(f => {
-    const pin = document.createElement('div');
-    pin.className = 'map-pin' + (f.id === selectedId ? ' active' : '');
-    pin.id = 'pin-' + f.id;
-    pin.style.left = f.pinLeft;
-    pin.style.top = f.pinTop;
-    pin.innerHTML = `<div class="pin-bubble ${f.id===selectedId?'selected':''}">${f.emoji} ${f.name.split(' ')[0]}</div>`;
-    pin.onclick = () => selectFlorist(f.id);
-    container.appendChild(pin);
+function dropCenterPin(center) {
+  if (centerMarker) centerMarker.setMap(null);
+  centerMarker = new google.maps.Marker({
+    position: center,
+    map: map,
+    title: 'Your ZIP code location',
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 10,
+      fillColor: '#4a90d9',
+      fillOpacity: 1,
+      strokeColor: '#ffffff',
+      strokeWeight: 3
+    },
+    zIndex: 999
+  });
+}
+
+function searchNearby(center) {
+  const miles = parseInt(document.getElementById('radiusSlider').value);
+  const meters = miles * 1609;
+
+  if (radiusCircle) radiusCircle.setMap(null);
+  radiusCircle = new google.maps.Circle({
+    map: map,
+    center: center,
+    radius: meters,
+    strokeColor: '#2d5c3f',
+    strokeOpacity: 0.25,
+    strokeWeight: 2,
+    fillColor: '#2d5c3f',
+    fillOpacity: 0.04
+  });
+
+  placesService.nearbySearch({
+    location: center,
+    radius: meters,
+    keyword: 'florist',
+    type: 'florist'
+  }, function(results, status) {
+    clearMarkers();
+    if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+      currentFlorists = results.map(function(place, i) {
+        const distMeters = google.maps.geometry.spherical.computeDistanceBetween(
+          new google.maps.LatLng(center.lat, center.lng),
+          place.geometry.location
+        );
+        return {
+          id: i + 1,
+          name: place.name,
+          address: place.vicinity || '',
+          city: '',
+          website: '#',
+          rating: place.rating || 0,
+          reviews: place.user_ratings_total || 0,
+          specialties: ['Florist'],
+          sameDay: false,
+          emoji: EMOJIS[i % EMOJIS.length],
+          color: COLORS[i % COLORS.length],
+          distance: parseFloat((distMeters / 1609).toFixed(1)),
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+          placeId: place.place_id
+        };
+      }).sort(function(a, b) { return a.distance - b.distance; });
+
+      applyFilter();
+      plotMarkers();
+    } else {
+      document.getElementById('resultsMeta').textContent = 'Hmm, Zip couldn't find any florists there — try increasing the radius or searching a nearby city.';
+      document.getElementById('floristList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Zip couldn't find any florists within ' + miles + ' miles. Try increasing the radius.</div>';
+    }
+  });
+}
+
+function clearMarkers() {
+  currentMarkers.forEach(function(m) { m.setMap(null); });
+  currentMarkers = [];
+}
+
+function plotMarkers() {
+  clearMarkers();
+  currentFlorists.forEach(function(f) {
+    var marker = new google.maps.Marker({
+      position: { lat: f.lat, lng: f.lng },
+      map: map,
+      title: f.name,
+      icon: {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="140" height="36">' +
+          '<rect rx="8" ry="8" width="140" height="32" fill="#1a3a2a"/>' +
+          '<text x="10" y="21" font-family="sans-serif" font-size="13" fill="white" font-weight="600">' +
+          f.emoji + ' ' + f.name.substring(0, 16) + (f.name.length > 16 ? '…' : '') +
+          '</text></svg>'
+        ),
+        scaledSize: new google.maps.Size(140, 36),
+        anchor: new google.maps.Point(0, 36)
+      }
+    });
+    (function(florist) {
+      marker.addListener('click', function() { selectFlorist(florist.id); });
+    })(f);
+    currentMarkers.push(marker);
+  });
+}
+
+function renderCards(data) {
+  var list = document.getElementById('floristList');
+  if (data.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No shops match this filter.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  data.forEach(function(f, i) {
+    var card = document.createElement('div');
+    card.className = 'florist-card' + (f.id === selectedId ? ' selected' : '');
+    card.style.animationDelay = (i * 0.07) + 's';
+    var ratingStr = f.rating > 0 ? ('★'.repeat(Math.floor(f.rating)) + ' ' + f.rating + ' (' + f.reviews + ')') : 'No reviews yet';
+    card.innerHTML =
+      '<div class="card-top">' +
+        '<div class="card-icon" style="background:' + f.color + '">' + f.emoji + '</div>' +
+        '<div class="card-title-row"><h3>' + f.name + '</h3><div class="card-address">' + f.address + '</div></div>' +
+        '<div class="card-distance">' + f.distance + ' mi</div>' +
+      '</div>' +
+      '<div class="card-tags">' +
+        (f.sameDay ? '<span class="tag same-day">⚡ Same-day</span>' : '') +
+        f.specialties.map(function(s) { return '<span class="tag">' + s + '</span>'; }).join('') +
+      '</div>' +
+      '<div class="card-bottom">' +
+        '<div class="card-rating"><span class="stars">' + ratingStr + '</span></div>' +
+        '<div class="card-actions">' +
+          '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(\'' + f.website + '\')">Visit Shop →</button>' +
+          '<button class="btn-report" onclick="event.stopPropagation();openReport(' + f.id + ')" title="Report this listing">🚩</button>' +
+        '</div>' +
+      '</div>';
+    card.onclick = function() { selectFlorist(f.id); };
+    list.appendChild(card);
   });
 }
 
 function selectFlorist(id) {
   selectedId = id;
-  const f = FLORISTS.find(x => x.id === id);
-  document.querySelectorAll('.florist-card').forEach((c,i) => {
-    c.classList.toggle('selected', FLORISTS[i]?.id === id);
+  var f = currentFlorists.find(function(x) { return x.id === id; });
+  if (!f) return;
+  if (map) { map.panTo({ lat: f.lat, lng: f.lng }); map.setZoom(15); }
+  document.querySelectorAll('.florist-card').forEach(function(c, i) {
+    c.classList.toggle('selected', currentFlorists[i] && currentFlorists[i].id === id);
   });
-  document.querySelectorAll('.map-pin').forEach(p => {
-    p.classList.toggle('active', p.id === 'pin-' + id);
-    p.querySelector('.pin-bubble').classList.toggle('selected', p.id === 'pin-' + id);
-  });
-  // Show popup
   document.getElementById('popupName').textContent = f.emoji + ' ' + f.name;
-  document.getElementById('popupDetail').textContent = f.distance + ' mi · ' + f.address + ' · Est. ' + f.established;
-  document.getElementById('popupVisitBtn').onclick = () => visitShop(f.website);
+  document.getElementById('popupDetail').textContent = f.distance + ' mi · ' + f.address;
+  document.getElementById('popupVisitBtn').onclick = function() { visitShop(f.website); };
   document.getElementById('mapPopup').classList.add('visible');
-  // Scroll card into view
-  const cards = document.querySelectorAll('.florist-card');
-  const idx = FLORISTS.findIndex(x => x.id === id);
+  var cards = document.querySelectorAll('.florist-card');
+  var idx = currentFlorists.findIndex(function(x) { return x.id === id; });
   if (cards[idx]) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function toggleFilter(el, filter) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
   el.classList.add('active');
   activeFilter = filter;
   applyFilter();
 }
 
 function applyFilter() {
-  let data = [...FLORISTS];
-  if (activeFilter === 'sameday') data = data.filter(f => f.sameDay);
-  if (activeFilter === 'weddings') data = data.filter(f => f.specialties.some(s => s.toLowerCase().includes('wedding')));
-  document.getElementById('resultsMeta').textContent = data.length + ' independent shop' + (data.length !== 1 ? 's' : '') + ' · within ' + document.getElementById('radiusSlider').value + ' miles';
+  var data = currentFlorists.slice();
+  if (activeFilter === 'sameday') data = data.filter(function(f) { return f.sameDay; });
+  if (activeFilter === 'weddings') data = data.filter(function(f) { return f.specialties.some(function(s) { return s.toLowerCase().includes('wedding'); }); });
+  document.getElementById('resultsMeta').textContent =
+    data.length + ' shop' + (data.length !== 1 ? 's' : '') + ' found · within ' + document.getElementById('radiusSlider').value + ' miles';
   renderCards(data);
-  renderPins(data);
 }
 
 function updateRadius(val) {
   document.getElementById('radiusVal').textContent = val + ' miles';
-  const size = Math.min(val * 52, 520);
-  const circle = document.getElementById('radiusCircle');
-  circle.style.width = size + 'px';
-  circle.style.height = size + 'px';
-  applyFilter();
+  var zip = document.getElementById('zipInput').value.trim();
+  if (zip.length >= 2) geocodeAndSearch(zip);
 }
 
 function doSearch() {
-  const zip = document.getElementById('zipInput').value;
-  document.getElementById('zipDisplay').textContent = zip;
-  // In production: fetch florists from backend by ZIP + radius
-  applyFilter();
+  var zip = document.getElementById('zipInput').value.trim();
+  if (zip.length >= 2) {
+    document.getElementById('zipDisplay').textContent = zip;
+    geocodeAndSearch(zip);
+  }
 }
 
 function visitShop(url) {
   if (url && url !== '#') window.open(url, '_blank');
-  else alert('In production, this would open the florist\'s own website in a new tab.');
+  else alert('This florist\'s website will appear here once they register on FlowersByZip.');
 }
 
-function openProfilePage(id) {
-  window.location = 'profile.html?id=' + id;
-}
 function openProfile() {
-  if (selectedId) openProfilePage(selectedId);
+  if (selectedId) window.location = 'profile.html?id=' + selectedId;
 }
 
-// Init — read ZIP from URL if passed from homepage
-const urlParams = new URLSearchParams(window.location.search);
-const zipFromUrl = urlParams.get('zip');
-if (zipFromUrl) {
-  document.getElementById('zipInput').value = zipFromUrl;
-  document.getElementById('zipDisplay').textContent = zipFromUrl;
+// REPORT FUNCTIONS
+function openReport(id) {
+  reportingFlorist = currentFlorists.find(function(f) { return f.id === id; });
+  selectedReason = null;
+  document.querySelectorAll('.report-option').forEach(function(o) { o.classList.remove('selected'); });
+  document.getElementById('reportComment').value = '';
+  document.getElementById('reportForm').style.display = 'block';
+  document.getElementById('reportSuccess').style.display = 'none';
+  document.getElementById('reportingShopName').textContent = reportingFlorist ? reportingFlorist.name : '';
+  document.getElementById('reportModal').classList.add('open');
 }
-applyFilter();
+
+function closeReport() {
+  document.getElementById('reportModal').classList.remove('open');
+  reportingFlorist = null;
+  selectedReason = null;
+}
+
+function selectReason(el, reason) {
+  document.querySelectorAll('.report-option').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedReason = reason;
+}
+
+function submitReport() {
+  if (!selectedReason) {
+    alert('Please select a reason for your report.');
+    return;
+  }
+  // In production: send to your backend / Airtable
+  console.log('Report submitted:', {
+    shop: reportingFlorist ? reportingFlorist.name : 'unknown',
+    reason: selectedReason,
+    comment: document.getElementById('reportComment').value,
+    timestamp: new Date().toISOString()
+  });
+  document.getElementById('reportForm').style.display = 'none';
+  document.getElementById('reportSuccess').style.display = 'block';
+}
+
+// Close modal on overlay click
+document.getElementById('reportModal').addEventListener('click', function(e) {
+  if (e.target === this) closeReport();
+});
 </script>
 </body>
 </html>

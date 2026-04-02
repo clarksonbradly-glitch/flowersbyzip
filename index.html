@@ -418,6 +418,29 @@
     white-space: nowrap; flex-shrink: 0;
   }
 
+  /* OWL MASCOT */
+  .owl-bubble-wrap {
+    display: flex; align-items: flex-end; gap: 1rem;
+    margin-bottom: 2rem; animation: owlIn 0.6s ease both; animation-delay: 0.2s;
+  }
+  @keyframes owlIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .owl-speech {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 1rem 1rem 1rem 0;
+    padding: 0.8rem 1.1rem;
+    font-size: 0.88rem; line-height: 1.6; color: var(--cream);
+    max-width: 340px; backdrop-filter: blur(4px);
+  }
+  .owl-speech strong { color: white; }
+  .owl-bubble-wrap svg { flex-shrink: 0; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
+  .nav-owl { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+  .nav-owl svg { transition: transform 0.3s; }
+  .nav-owl:hover svg { transform: rotate(-8deg) scale(1.05); }
+
   /* responsive */
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; }
@@ -437,9 +460,12 @@
 
 <!-- NAV -->
 <nav>
-  <div class="logo">flowers<span>by</span>zip</div>
+  <a class="nav-owl" href="index.html">
+    <svg width="36" height="36" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/><line x1="62" y1="146" x2="52" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="62" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="72" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="88" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="98" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="108" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/></svg>
+    <div class="logo">flowers<span>by</span>zip</div>
+  </a>
   <ul class="nav-links">
-    <li><a href="results.html">How It Works</a></li>
+    <li><a href="results.html">Find Florists</a></li>
     <li><a href="about.html">Our Mission</a></li>
     <li><a href="register.html">For Florists</a></li>
   </ul>
@@ -453,8 +479,16 @@
     <h1>Real flowers.<br>Real florists.<br><em>Real profits.</em></h1>
     <p class="hero-sub">Enter your ZIP code and connect directly with an independent flower shop near you — no middlemen, no hidden fees. Every order goes straight to a local business that cares.</p>
 
+    <!-- OWL GUIDE -->
+    <div class="owl-bubble-wrap">
+      <svg width="90" height="90" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M57,126 Q65,117 73,126 Q81,117 89,126 Q97,117 105,126" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/><circle cx="80" cy="98" r="4" fill="#e8b4a0"/><circle cx="74" cy="93" r="3" fill="#7a9e7e"/><circle cx="86" cy="93" r="3" fill="#7a9e7e"/><circle cx="80" cy="88" r="3" fill="#7a9e7e"/><path d="M34,90 Q28,110 34,128 Q40,112 46,102" fill="#2d5c3f"/><path d="M126,90 Q132,110 126,128 Q120,112 114,102" fill="#2d5c3f"/><line x1="62" y1="146" x2="52" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="62" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="72" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="88" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="98" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="108" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/></svg>
+      <div class="owl-speech">
+        Hi, I'm <strong>Zip</strong>! 🦉 Enter your ZIP or city and I'll find every <strong>independent florist</strong> near you. No wire services. No hidden fees. 🌸
+      </div>
+    </div>
+
     <div class="zip-form">
-      <input type="text" id="zipInput" placeholder="Enter ZIP code..." maxlength="5" inputmode="numeric" />
+      <input type="text" id="zipInput" placeholder="ZIP code or city, state…" />
       <button class="zip-btn" onclick="searchZip()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         Find Florists
@@ -503,7 +537,7 @@
 <section class="why">
   <div class="why-header">
     <h2>The hidden cost<br>of <em>"convenient"</em><br>flower delivery</h2>
-    <p class="why-intro">Companies like Teleflora and FTD present themselves as helping local florists — but the reality is that after membership fees, order fees, and commission cuts, many independent shops are left with less than half the order value to actually make your arrangement. <strong style="color:var(--cream)">FlowersByZip changes that.</strong></p>
+    <p class="why-intro">Companies like wire service providers present themselves as helping local florists — but the reality is that after membership fees, order fees, and commission cuts, many independent shops are left with less than half the order value to actually make your arrangement. <strong style="color:var(--cream)">FlowersByZip changes that.</strong></p>
   </div>
   <div class="stat-grid">
     <div class="stat-card">
@@ -568,7 +602,7 @@
   <h2>Are you an independent flower shop?</h2>
   <p>Listing on FlowersByZip is free. No commissions, no wire service fees — just a direct connection to customers in your area who want to support you.</p>
   <div class="cta-buttons">
-    <button class="btn-primary" onclick="window.location='register.html'">List My Shop — It's Free</button>
+    <button class="btn-primary">List My Shop — It's Free</button>
     <button class="btn-outline">Learn About Eligibility</button>
   </div>
 </section>
@@ -623,12 +657,13 @@
 <script>
   function searchZip() {
     const zip = document.getElementById('zipInput').value.trim();
-    if (zip.length < 5 || isNaN(zip)) {
-      document.getElementById('zipInput').style.borderBottom = '2px solid red';
-      document.getElementById('zipInput').placeholder = 'Enter a valid 5-digit ZIP';
+    if (zip.length < 2) {
+      document.getElementById('zipInput').style.outline = '2px solid red';
+      document.getElementById('zipInput').placeholder = 'Enter a ZIP code or city name';
       return;
     }
-    window.location = 'results.html?zip=' + zip;
+    document.getElementById('zipDisplay').textContent = zip;
+    document.getElementById('resultsOverlay').classList.add('open');
   }
 
   function closeModal() {
