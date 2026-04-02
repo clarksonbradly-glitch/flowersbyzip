@@ -311,33 +311,33 @@ nav {
         <div class="form-grid">
           <div class="form-field full">
             <label>Shop Name *</label>
-            <input type="text" placeholder="e.g. Petal & Stem Studio" />
+            <input type="text" id="shopName" name="Shop Name" placeholder="e.g. Petal & Stem Studio" />
           </div>
           <div class="form-field full">
             <label>Your Name (Owner) *</label>
-            <input type="text" placeholder="Your full name" />
+            <input type="text" id="ownerName" name="Owner Name" placeholder="Your full name" />
           </div>
           <div class="form-field full">
             <label>Shop Website *</label>
-            <input type="url" placeholder="https://yourshop.com" />
+            <input type="url" id="website" name="Website" placeholder="https://yourshop.com" />
             <div class="field-hint">This is where customers will be directed to place orders.</div>
           </div>
           <div class="form-field">
             <label>Phone Number *</label>
-            <input type="tel" placeholder="(555) 000-0000" />
+            <input type="tel" id="phone" name="Phone" placeholder="(555) 000-0000" />
           </div>
           <div class="form-field">
             <label>Email Address *</label>
-            <input type="email" placeholder="you@yourshop.com" />
+            <input type="email" id="email" name="Email" placeholder="you@yourshop.com" />
             <div class="field-hint">Not shown publicly.</div>
           </div>
           <div class="form-field">
             <label>Year Established</label>
-            <input type="number" placeholder="e.g. 1998" min="1900" max="2025" />
+            <input type="number" id="yearEstablished" name="Year Established" placeholder="e.g. 1998" min="1900" max="2025" />
           </div>
           <div class="form-field">
             <label>Year(s) in Business</label>
-            <input type="number" placeholder="e.g. 27" min="0" />
+            <input type="number" id="yearsInBusiness" name="Years in Business" placeholder="e.g. 27" min="0" />
           </div>
         </div>
         <div class="form-nav">
@@ -353,41 +353,52 @@ nav {
         <div class="form-grid">
           <div class="form-field full">
             <label>Street Address *</label>
-            <input type="text" placeholder="123 Main St" />
+            <input type="text" id="streetAddress" name="Street Address" placeholder="123 Main St" />
           </div>
           <div class="form-field">
             <label>City *</label>
-            <input type="text" placeholder="Chicago" />
+            <input type="text" id="city" name="City" placeholder="Chicago" />
           </div>
           <div class="form-field">
             <label>State *</label>
-            <select>
+            <select id="state" name="State">
               <option value="">Select state…</option>
-              <option>IL</option><option>NY</option><option>CA</option><option>TX</option>
-              <option>FL</option><option>OH</option><option>PA</option><option>GA</option>
+              <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+              <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+              <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+              <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+              <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+              <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+              <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+              <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+              <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+              <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+              <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+              <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+              <option>WI</option><option>WY</option>
             </select>
           </div>
           <div class="form-field">
             <label>ZIP Code *</label>
-            <input type="text" placeholder="60614" maxlength="5" />
+            <input type="text" id="zipCode" name="ZIP Code" placeholder="60614" maxlength="5" />
           </div>
           <div class="form-field full">
             <label>Shop Description</label>
-            <textarea placeholder="Tell customers what makes your shop special — your story, your style, what you love about flowers…"></textarea>
+            <textarea id="description" name="Description" placeholder="Tell customers what makes your shop special — your story, your style, what you love about flowers…"></textarea>
           </div>
         </div>
 
         <div style="margin-top:1.2rem;">
           <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.7rem;">Specialties (select all that apply)</label>
           <div class="spec-grid">
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>💍 Weddings</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>⚡ Same-day delivery</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>🕊️ Sympathy / Funerals</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>🏢 Corporate events</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>🎂 Birthday flowers</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>🌿 Dried & preserved</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>🎓 Graduation</span></div>
-            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox"><span>📚 Workshops & classes</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_weddings" value="Weddings"><span>💍 Weddings</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_sameday" value="Same-day delivery"><span>⚡ Same-day delivery</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_sympathy" value="Sympathy / Funerals"><span>🕊️ Sympathy / Funerals</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_corporate" value="Corporate events"><span>🏢 Corporate events</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_birthday" value="Birthday flowers"><span>🎂 Birthday flowers</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_dried" value="Dried & preserved"><span>🌿 Dried & preserved</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_graduation" value="Graduation"><span>🎓 Graduation</span></div>
+            <div class="spec-item" onclick="toggleSpec(this)"><input type="checkbox" name="spec_workshops" value="Workshops & classes"><span>📚 Workshops & classes</span></div>
           </div>
         </div>
 
@@ -421,7 +432,7 @@ nav {
 
         <div class="form-field" style="margin-bottom:1rem;">
           <label>Anything else you'd like us to know?</label>
-          <textarea placeholder="Optional: any notes about your shop, your community involvement, your story…" style="min-height:80px;"></textarea>
+          <textarea id="adminNotes" name="Admin Notes" placeholder="Optional: any notes about your shop, your community involvement, your story…" style="min-height:80px;"></textarea>
         </div>
 
         <div class="form-nav">
@@ -541,14 +552,69 @@ function nextStep(n) {
 function prevStep(n) { nextStep(n); }
 
 function submitForm() {
-  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('successScreen').classList.add('visible');
-  // Update all dots to done
-  for (let i = 1; i <= 4; i++) {
-    const dot = document.getElementById('dot' + i);
-    dot.className = 'prog-dot done'; dot.textContent = '✓';
-    if (i < 4) document.getElementById('line' + i).className = 'prog-line done';
+  // Gather all form data
+  const specialties = [];
+  document.querySelectorAll('.spec-item.selected input[type="checkbox"]').forEach(cb => {
+    specialties.push(cb.value);
+  });
+
+  const data = {
+    'Shop Name':         document.getElementById('shopName')?.value || '',
+    'Owner Name':        document.getElementById('ownerName')?.value || '',
+    'Website':           document.getElementById('website')?.value || '',
+    'Phone':             document.getElementById('phone')?.value || '',
+    'Email':             document.getElementById('email')?.value || '',
+    'Year Established':  document.getElementById('yearEstablished')?.value || '',
+    'Years in Business': document.getElementById('yearsInBusiness')?.value || '',
+    'Street Address':    document.getElementById('streetAddress')?.value || '',
+    'City':              document.getElementById('city')?.value || '',
+    'State':             document.getElementById('state')?.value || '',
+    'ZIP Code':          document.getElementById('zipCode')?.value || '',
+    'Description':       document.getElementById('description')?.value || '',
+    'Specialties':       specialties.join(', '),
+    'Admin Notes':       document.getElementById('adminNotes')?.value || '',
+  };
+
+  // Validate required fields
+  if (!data['Shop Name'] || !data['Email'] || !data['ZIP Code']) {
+    alert('Please go back and fill in Shop Name, Email, and ZIP Code before submitting.');
+    return;
   }
+
+  // Show loading state
+  const submitBtn = document.querySelector('#step4 .btn-next');
+  submitBtn.textContent = 'Sending…';
+  submitBtn.disabled = true;
+
+  // Send to Formspree
+  fetch('https://formspree.io/f/mwvwnwor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (response.ok) {
+      // Success — show confirmation screen
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('successScreen').classList.add('visible');
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById('dot' + i);
+        dot.className = 'prog-dot done'; dot.textContent = '✓';
+        if (i < 4) document.getElementById('line' + i).className = 'prog-line done';
+      }
+    } else {
+      response.json().then(err => {
+        alert('There was a problem submitting your application. Please try again or email zip@flowersbyzip.com directly.');
+        submitBtn.textContent = 'Submit Application ✦';
+        submitBtn.disabled = false;
+      });
+    }
+  })
+  .catch(() => {
+    alert('Network error. Please check your connection and try again.');
+    submitBtn.textContent = 'Submit Application ✦';
+    submitBtn.disabled = false;
+  });
 }
 </script>
 </body>
