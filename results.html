@@ -5,7 +5,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;FlowersByZip&quot;,&quot;short_name&quot;:&quot;FlowersByZip&quot;,&quot;icons&quot;:[],&quot;theme_color&quot;:&quot;#1a3a2a&quot;,&quot;background_color&quot;:&quot;#f5f0e8&quot;,&quot;display&quot;:&quot;standalone&quot;}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FlowersByZip — Find Local Florists</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -212,7 +212,7 @@ input[type=range] { width: 100%; accent-color: var(--green); }
 </div>
 
 <!-- Google Maps API -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // Fallback if Google Maps fails to load
 window.gm_authFailure = function() {
   document.getElementById('googleMap').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#eef4ee;flex-direction:column;gap:1rem;padding:2rem;text-align:center"><div style="font-size:3rem">🦉</div><p style="font-family:sans-serif;color:#1a3a2a;font-weight:600">Zip says: Map unavailable right now</p><p style="font-family:sans-serif;color:#7a8a80;font-size:0.85rem">The florist list on the left still works — use that to find shops near you.</p></div>';
@@ -252,6 +252,15 @@ function initMap() {
     styles:MAP_STYLE, mapTypeControl:false,
     streetViewControl:false, fullscreenControl:false
   });
+  placesService = new google.maps.places.PlacesService(map);
+
+  // Auto-search if ZIP in URL
+  var params = new URLSearchParams(window.location.search);
+  var zip = params.get('zip');
+  if (zip) {
+    document.getElementById('zipInput').value = zip;
+    runSearch(zip);
+  }
 }
 
 // ─── MAIN SEARCH ──────────────────────────────────────────
@@ -260,46 +269,74 @@ function runSearch(query) {
   document.getElementById('zipDisplay').textContent = query;
   document.getElementById('resultsMeta').textContent = 'Searching…';
   document.getElementById('floristList').innerHTML =
-    '<div style="text-align:center;padding:2rem;color:#7a8a80;font-size:0.88rem;"><svg width="32" height="32" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/><ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/><path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><path d="M22,51 Q26,46 30,51 Q34,46 38,51 Q41,47 43,51" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><circle cx="32" cy="24" r="16" fill="#1a3a2a"/><path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/><path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/><path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/><path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/><circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="24" cy="24" r="5.2" fill="#c9a84c"/><circle cx="40" cy="24" r="5.2" fill="#c9a84c"/><circle cx="24" cy="24" r="3" fill="#1a3a2a"/><circle cx="40" cy="24" r="3" fill="#1a3a2a"/><circle cx="25.5" cy="22.5" r="1.2" fill="white"/><circle cx="41.5" cy="22.5" r="1.2" fill="white"/><path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/><path d="M13.5,38 Q10,45 13,54 Q16,45 18,40" fill="#2d5c3f"/><path d="M50.5,38 Q54,45 51,54 Q48,45 46,40" fill="#2d5c3f"/><line x1="25" y1="62" x2="21" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="25" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="29" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="35" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="39" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="43" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/></svg> Zip is finding local florists…</div>';
+    '<div style="text-align:center;padding:2rem;color:#7a8a80;font-size:0.88rem;">Zip is finding local florists near ' + query + '…</div>';
 
-  var radius = document.getElementById('radiusSlider').value || 25;
-  var url = '/api/florists?zip=' + encodeURIComponent(query) + '&radius=' + radius;
+  // Geocode the query first to get coordinates
+  geocoder.geocode({address: query + ', USA'}, function(results, status) {
+    if (status !== 'OK' || !results[0]) {
+      document.getElementById('resultsMeta').textContent = 'Location not found — try a different ZIP or city';
+      document.getElementById('floristList').innerHTML =
+        '<div style="text-align:center;padding:2rem;color:#7a8a80;">Zip couldn\'t find that location. Please try a different ZIP code or city name.</div>';
+      return;
+    }
 
-  fetch(url)
-    .then(function(r) {
-      if (!r.ok) throw new Error('API error ' + r.status);
-      return r.json();
-    })
-    .then(function(data) {
-      if (data.florists && data.florists.length > 0) {
-        currentFlorists = data.florists;
-        // Update map center if we have it
-        if (map && data.center && data.center.lat) {
-          map.setCenter({lat: data.center.lat, lng: data.center.lng});
-          map.setZoom(13);
-          dropPin(data.center, true);
-          drawRadius(data.center, radius);
-        }
+    var loc = results[0].geometry.location;
+    var center = {lat: loc.lat(), lng: loc.lng()};
+
+    // Center map and drop pin
+    map.setCenter(center);
+    map.setZoom(13);
+    dropPin(center, true);
+
+    var miles = parseInt(document.getElementById('radiusSlider').value) || 5;
+    drawRadius(center, miles);
+
+    // Search Google Places for florists nearby
+    placesService.nearbySearch({
+      location: center,
+      radius: miles * 1609,
+      keyword: 'florist',
+      type: 'florist'
+    }, function(results, status) {
+      clearMarkers();
+      if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+        var emojis = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
+        var colors = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
+        currentFlorists = results.map(function(place, i) {
+          var distM = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(center.lat, center.lng),
+            place.geometry.location
+          );
+          return {
+            id: i + 1,
+            name: place.name,
+            address: place.vicinity || '',
+            website: '#',
+            rating: place.rating || 0,
+            reviews: place.user_ratings_total || 0,
+            specialties: ['Local Florist'],
+            sameDay: false,
+            emoji: emojis[i % emojis.length],
+            color: colors[i % colors.length],
+            distance: parseFloat((distM / 1609).toFixed(1)),
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+            placeId: place.place_id
+          };
+        }).sort(function(a, b) { return a.distance - b.distance; });
+
         applyFilter();
         plotMarkers();
       } else {
-        document.getElementById('resultsMeta').textContent = 'No florists listed in this area yet';
+        document.getElementById('resultsMeta').textContent = 'No florists found in this area';
         document.getElementById('floristList').innerHTML =
           '<div style="text-align:center;padding:2rem;color:#7a8a80;">' +
-          '<svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/><ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/><path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><path d="M22,51 Q26,46 30,51 Q34,46 38,51 Q41,47 43,51" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><circle cx="32" cy="24" r="16" fill="#1a3a2a"/><path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/><path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/><path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/><path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/><circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="24" cy="24" r="5.2" fill="#c9a84c"/><circle cx="40" cy="24" r="5.2" fill="#c9a84c"/><circle cx="24" cy="24" r="3" fill="#1a3a2a"/><circle cx="40" cy="24" r="3" fill="#1a3a2a"/><circle cx="25.5" cy="22.5" r="1.2" fill="white"/><circle cx="41.5" cy="22.5" r="1.2" fill="white"/><path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/><path d="M13.5,38 Q10,45 13,54 Q16,45 18,40" fill="#2d5c3f"/><path d="M50.5,38 Q54,45 51,54 Q48,45 46,40" fill="#2d5c3f"/><line x1="25" y1="62" x2="21" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="25" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="29" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="35" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="39" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="43" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/></svg>' +
-          '<strong style="color:#1a3a2a;display:block;margin-bottom:0.5rem">Zip says:</strong>' +
-          'No independent florists are listed here yet.<br><br>' +
+          'No florists found within ' + miles + ' miles. Try increasing the radius.<br><br>' +
           'Are you a florist? <a href="register.html" style="color:#1a3a2a;font-weight:700">List your shop free →</a>' +
           '</div>';
       }
-    })
-    .catch(function(err) {
-      console.error('Search error:', err);
-      document.getElementById('resultsMeta').textContent = 'Showing demo results';
-      currentFlorists = FLORISTS_DEMO;
-      applyFilter();
-      plotMarkers();
     });
+  });
 }
 
 function doSearch() {
@@ -516,5 +553,6 @@ document.getElementById('reportModal').addEventListener('click', function(e) {
 document.getElementById('zipInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doSearch();
 });
-
-// ─
+</script>
+</body>
+</html>
