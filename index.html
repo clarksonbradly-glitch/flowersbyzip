@@ -60,17 +60,18 @@
 
   /* ── HERO ── */
   .hero {
-    min-height: 100vh;
+    min-height: 70vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding-top: 5rem;
     position: relative;
     overflow: hidden;
+    align-items: center;
   }
 
   .hero-left {
     display: flex; flex-direction: column; justify-content: center;
-    padding: 5rem 3rem 5rem 5rem;
+    padding: 4rem 3rem 4rem 5rem;
     position: relative; z-index: 2;
   }
 
@@ -94,78 +95,46 @@
   }
   h1 em { font-style: italic; color: var(--sage); }
 
-  .hero-sub {
-    font-size: 1.05rem; line-height: 1.7;
-    color: #4a5a50; max-width: 480px;
-    margin-bottom: 2.5rem;
-  }
-
-  /* ZIP SEARCH */
-  .zip-form {
-    display: flex; align-items: center;
-    background: white;
-    border: 2px solid var(--green);
-    border-radius: 3rem;
-    padding: 0.4rem 0.4rem 0.4rem 1.4rem;
-    max-width: 420px;
-    box-shadow: 0 8px 32px rgba(26,58,42,0.12);
-    transition: box-shadow 0.2s;
-  }
-  .zip-form:focus-within {
-    box-shadow: 0 12px 40px rgba(26,58,42,0.2);
-  }
-  .zip-form input {
-    flex: 1; border: none; outline: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1.05rem; letter-spacing: 0.12em;
-    color: var(--green); background: transparent;
-  }
-  .zip-form input::placeholder { color: #aab8af; letter-spacing: 0.05em; }
-  .zip-btn {
-    background: var(--green); color: var(--cream);
-    border: none; border-radius: 2.5rem;
-    padding: 0.75rem 1.6rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem; font-weight: 500;
-    cursor: pointer; white-space: nowrap;
-    transition: background 0.2s, transform 0.1s;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .zip-btn:hover { background: var(--green-mid); transform: scale(1.02); }
-  .zip-btn svg { width: 16px; height: 16px; }
-
   .hero-trust {
-    margin-top: 2rem;
     display: flex; align-items: center; gap: 1.5rem;
     font-size: 0.82rem; color: #7a8a80;
+    flex-wrap: wrap;
   }
-  .trust-dot {
-    display: flex; align-items: center; gap: 0.4rem;
-  }
-  .trust-dot::before {
-    content: '✦'; color: var(--gold); font-size: 0.7rem;
-  }
+  .trust-dot { display: flex; align-items: center; gap: 0.4rem; }
+  .trust-dot::before { content: '✦'; color: var(--gold); font-size: 0.7rem; }
 
-  /* HERO RIGHT — clean linear cards */
+  /* HERO RIGHT — Zip + search */
   .hero-right {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.8rem;
-    padding: 2rem 3rem 2rem 1rem;
+    gap: 1.2rem;
+    padding: 4rem 5rem 4rem 2rem;
   }
-  .hero-right-label {
+
+  /* FEATURED LISTINGS SECTION */
+  .featured-section {
+    background: white;
+    padding: 3rem 5rem;
+    border-top: 1px solid rgba(26,58,42,0.08);
+  }
+  .featured-label {
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--sage);
-    margin-bottom: 0.4rem;
     display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 1.2rem;
   }
-  .hero-right-label::before { content: ''; width: 1.5rem; height: 1px; background: var(--sage); }
+  .featured-label::before { content: ''; width: 1.5rem; height: 1px; background: var(--sage); }
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
   .shop-card {
-    background: white;
+    background: var(--cream);
     border-radius: 1rem;
     padding: 1rem 1.2rem;
-    box-shadow: 0 2px 16px rgba(26,58,42,0.08);
+    box-shadow: 0 2px 16px rgba(26,58,42,0.06);
     display: flex; align-items: center; gap: 1rem;
     border: 1.5px solid transparent;
     transition: all 0.2s; cursor: pointer;
@@ -174,7 +143,7 @@
   .shop-card:nth-child(2) { animation-delay: 0.1s; }
   .shop-card:nth-child(3) { animation-delay: 0.2s; }
   .shop-card:nth-child(4) { animation-delay: 0.3s; }
-  .shop-card:hover { border-color: var(--sage); box-shadow: 0 4px 24px rgba(26,58,42,0.14); transform: translateX(4px); }
+  .shop-card:hover { border-color: var(--sage); box-shadow: 0 4px 24px rgba(26,58,42,0.14); transform: translateY(-3px); }
   @keyframes fadeSlideUp {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -188,16 +157,17 @@
   .shop-icon.blush { background: #faeae4; }
   .shop-icon.gold  { background: #faf3e0; }
   .shop-icon.lavender { background: #f0eaf8; }
-  .shop-info { flex: 1; }
+  .shop-info { flex: 1; min-width: 0; }
   .shop-info h4 {
     font-family: 'Playfair Display', serif;
-    font-size: 0.92rem; color: var(--green); margin-bottom: 0.15rem;
+    font-size: 0.88rem; color: var(--green); margin-bottom: 0.15rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .shop-info p { font-size: 0.75rem; color: #7a8a80; }
+  .shop-info p { font-size: 0.72rem; color: #7a8a80; }
   .shop-badge {
     background: #e8f2e8; color: var(--green-mid);
-    font-size: 0.68rem; font-weight: 600;
-    padding: 0.2rem 0.55rem; border-radius: 1rem;
+    font-size: 0.65rem; font-weight: 600;
+    padding: 0.2rem 0.5rem; border-radius: 1rem;
     white-space: nowrap; flex-shrink: 0;
   }
 
@@ -441,16 +411,48 @@
   .nav-owl:hover svg { transform: rotate(-8deg) scale(1.05); }
 
   /* responsive */
+  /* ZIP SEARCH */
+  .zip-form {
+    display: flex; align-items: center;
+    background: white;
+    border: 2px solid var(--green);
+    border-radius: 3rem;
+    padding: 0.4rem 0.4rem 0.4rem 1.4rem;
+    box-shadow: 0 8px 32px rgba(26,58,42,0.12);
+    transition: box-shadow 0.2s;
+  }
+  .zip-form:focus-within { box-shadow: 0 12px 40px rgba(26,58,42,0.2); }
+  .zip-form input {
+    flex: 1; border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; color: var(--green); background: transparent;
+  }
+  .zip-form input::placeholder { color: #aab8af; }
+  .zip-btn {
+    background: var(--green); color: var(--cream);
+    border: none; border-radius: 2.5rem;
+    padding: 0.75rem 1.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: background 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .zip-btn:hover { background: var(--green-mid); }
+  .zip-btn svg { width: 16px; height: 16px; }
+
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; }
-    .hero-right { display: none; }
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
+    .hero-left { padding: 5rem 2rem 2rem; }
+    .hero-right { padding: 1rem 2rem 3rem; }
+    .featured-section { padding: 2rem 1.5rem; }
+    .featured-grid { grid-template-columns: 1fr 1fr; }
     .why, .how, .mission, .florist-cta { padding: 4rem 2rem; }
     .why-header, .mission { grid-template-columns: 1fr; gap: 2rem; }
     .stat-grid, .steps { grid-template-columns: 1fr 1fr; }
     footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem; }
-    .hero-left { padding: 6rem 2rem 4rem; }
     .step:not(:last-child)::after { display: none; }
   }
 </style>
@@ -473,11 +475,19 @@
 
 <!-- HERO -->
 <section class="hero">
+  <!-- LEFT: Headline + trust -->
   <div class="hero-left">
     <div class="hero-eyebrow">Direct from the florist to you</div>
-    <h1>Real flowers.<br>Real florists.<br><em>Real profits.</em></h1>
+    <h1>Real flowers.<br>Real florists.<br><em>Real results.</em></h1>
+    <div class="hero-trust">
+      <span class="trust-dot">Independent shops only</span>
+      <span class="trust-dot">No wire service fees</span>
+      <span class="trust-dot">Order direct</span>
+    </div>
+  </div>
 
-    <!-- OWL + SEARCH together -->
+  <!-- RIGHT: Zip + Search -->
+  <div class="hero-right">
     <div class="owl-bubble-wrap">
       <svg width="90" height="90" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M57,126 Q65,117 73,126 Q81,117 89,126 Q97,117 105,126" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/><circle cx="80" cy="98" r="4" fill="#e8b4a0"/><circle cx="74" cy="93" r="3" fill="#7a9e7e"/><circle cx="86" cy="93" r="3" fill="#7a9e7e"/><circle cx="80" cy="88" r="3" fill="#7a9e7e"/><path d="M34,90 Q28,110 34,128 Q40,112 46,102" fill="#2d5c3f"/><path d="M126,90 Q132,110 126,128 Q120,112 114,102" fill="#2d5c3f"/><line x1="62" y1="146" x2="52" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="62" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="62" y1="146" x2="72" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="88" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="98" y2="158" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/><line x1="98" y1="146" x2="108" y2="156" stroke="#c9a84c" stroke-width="3" stroke-linecap="round"/></svg>
       <div class="owl-speech">
@@ -492,22 +502,18 @@
         Find Florists
       </button>
     </div>
-
-    <div class="hero-trust">
-      <span class="trust-dot">Independent shops only</span>
-      <span class="trust-dot">No wire service fees</span>
-      <span class="trust-dot">Order direct</span>
-    </div>
   </div>
+</section>
 
-  <!-- RIGHT: Clean linear florist cards -->
-  <div class="hero-right">
-    <div class="hero-right-label">Sample listings near you</div>
+<!-- FEATURED LISTINGS -->
+<section class="featured-section">
+  <div class="featured-label">Sample listings</div>
+  <div class="featured-grid">
     <div class="shop-card" onclick="window.location='results.html'">
       <div class="shop-icon green">🌸</div>
       <div class="shop-info">
         <h4>Petal & Stem Studio</h4>
-        <p>0.4 miles away · Chicago, IL</p>
+        <p>0.4 mi · Chicago, IL</p>
       </div>
       <span class="shop-badge">✓ Independent</span>
     </div>
@@ -515,7 +521,7 @@
       <div class="shop-icon blush">🌺</div>
       <div class="shop-info">
         <h4>Bloom & Co.</h4>
-        <p>1.1 miles away · Chicago, IL</p>
+        <p>1.1 mi · Chicago, IL</p>
       </div>
       <span class="shop-badge">✓ Independent</span>
     </div>
@@ -523,7 +529,7 @@
       <div class="shop-icon gold">🌼</div>
       <div class="shop-info">
         <h4>The Garden Room</h4>
-        <p>1.8 miles away · Chicago, IL</p>
+        <p>1.8 mi · Chicago, IL</p>
       </div>
       <span class="shop-badge">✓ Independent</span>
     </div>
@@ -531,15 +537,14 @@
       <div class="shop-icon lavender">🌻</div>
       <div class="shop-info">
         <h4>Wildflower Workshop</h4>
-        <p>2.3 miles away · Chicago, IL</p>
+        <p>2.3 mi · Chicago, IL</p>
       </div>
       <span class="shop-badge">✓ Independent</span>
     </div>
-    <div style="text-align:center;margin-top:0.5rem;">
-      <a href="results.html" style="font-size:0.8rem;color:var(--sage);font-weight:600;text-decoration:none;">Search your area →</a>
-    </div>
   </div>
-
+  <div style="text-align:center;margin-top:1.2rem;">
+    <a href="results.html" style="font-size:0.82rem;color:var(--sage);font-weight:600;text-decoration:none;">Search your area for real local florists →</a>
+  </div>
 </section>
 
 <!-- WHY SECTION -->
