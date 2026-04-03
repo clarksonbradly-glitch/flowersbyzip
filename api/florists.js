@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
     if (zip && (!lat || !lng)) {
       const geoRes = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(zip + ', USA')}&key=${process.env.GOOGLE_MAPS_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(zip + ', USA')}&key=${process.env.GOOGLE_MAPS_KEY || 'AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA'}`
       );
       const geoData = await geoRes.json();
       if (geoData.results && geoData.results[0]) {
@@ -60,16 +60,19 @@ export default async function handler(req, res) {
         let distance = null;
 
         // Geocode florist address
-        if (address && centerLat && centerLng) {
+        const mapsKey = process.env.GOOGLE_MAPS_KEY || 'AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA';
+        if (address) {
           try {
             const geoRes = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.GOOGLE_MAPS_KEY}`
+              `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${mapsKey}`
             );
             const geoData = await geoRes.json();
             if (geoData.results && geoData.results[0]) {
               floristLat = geoData.results[0].geometry.location.lat;
               floristLng = geoData.results[0].geometry.location.lng;
-              distance = haversine(centerLat, centerLng, floristLat, floristLng);
+              if (centerLat && centerLng) {
+                distance = haversine(centerLat, centerLng, floristLat, floristLng);
+              }
             }
           } catch (e) {
             // If geocoding fails, still include the florist without distance
