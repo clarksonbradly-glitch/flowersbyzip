@@ -254,18 +254,24 @@ function initMap() {
   });
   placesService = new google.maps.places.PlacesService(map);
 
-  // Auto-search if ZIP in URL
-  var params = new URLSearchParams(window.location.search);
-  var zip = params.get('zip');
-  if (zip) {
-    document.getElementById('zipInput').value = zip;
-    runSearch(zip);
-  }
+  // Auto-search if ZIP in URL — wait until map is idle first
+  google.maps.event.addListenerOnce(map, 'idle', function() {
+    var params = new URLSearchParams(window.location.search);
+    var zip = params.get('zip');
+    if (zip) {
+      document.getElementById('zipInput').value = zip;
+      runSearch(zip);
+    }
+  });
 }
 
 // ─── MAIN SEARCH ──────────────────────────────────────────
 function runSearch(query) {
   if (!query || query.length < 2) return;
+  if (!geocoder || !placesService) {
+    setTimeout(function() { runSearch(query); }, 300);
+    return;
+  }
   document.getElementById('zipDisplay').textContent = query;
   document.getElementById('resultsMeta').textContent = 'Searching…';
   document.getElementById('floristList').innerHTML =
@@ -292,51 +298,89 @@ function runSearch(query) {
     drawRadius(center, miles);
 
     // Search Google Places for florists nearby
-    placesService.nearbySearch({
+    // Try textSearch first, fall back to nearbySearch, then demo data
+    placesService.textSearch({
+      query: 'florist flower shop',
       location: center,
-      radius: miles * 1609,
-      keyword: 'florist',
-      type: 'florist'
+      radius: miles * 1609
     }, function(results, status) {
+      console.log('textSearch status:', status, 'results:', results ? results.length : 0);
       clearMarkers();
-      if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-        var emojis = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
-        var colors = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
-        currentFlorists = results.map(function(place, i) {
-          var distM = google.maps.geometry.spherical.computeDistanceBetween(
-            new google.maps.LatLng(center.lat, center.lng),
-            place.geometry.location
-          );
-          return {
-            id: i + 1,
-            name: place.name,
-            address: place.vicinity || '',
-            website: '#',
-            rating: place.rating || 0,
-            reviews: place.user_ratings_total || 0,
-            specialties: ['Local Florist'],
-            sameDay: false,
-            emoji: emojis[i % emojis.length],
-            color: colors[i % colors.length],
-            distance: parseFloat((distM / 1609).toFixed(1)),
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-            placeId: place.place_id
-          };
-        }).sort(function(a, b) { return a.distance - b.distance; });
-
-        applyFilter();
-        plotMarkers();
+      if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
+        buildFloristList(results, center, miles, 'formatted_address');
       } else {
-        document.getElementById('resultsMeta').textContent = 'No florists found in this area';
-        document.getElementById('floristList').innerHTML =
-          '<div style="text-align:center;padding:2rem;color:#7a8a80;">' +
-          'No florists found within ' + miles + ' miles. Try increasing the radius.<br><br>' +
-          'Are you a florist? <a href="register.html" style="color:#1a3a2a;font-weight:700">List your shop free →</a>' +
-          '</div>';
+        // Fallback to nearbySearch
+        console.log('textSearch failed, trying nearbySearch...');
+        placesService.nearbySearch({
+          location: center,
+          radius: miles * 1609,
+          type: 'florist'
+        }, function(nearbyResults, nearbyStatus) {
+          console.log('nearbySearch status:', nearbyStatus, 'results:', nearbyResults ? nearbyResults.length : 0);
+          if (nearbyStatus === google.maps.places.PlacesServiceStatus.OK && nearbyResults && nearbyResults.length > 0) {
+            buildFloristList(nearbyResults, center, miles, 'vicinity');
+          } else {
+            // Final fallback — show demo data so page is never empty
+            console.log('Both searches failed, showing demo data. Status:', nearbyStatus);
+            showDemoData(center, miles);
+          }
+        });
       }
     });
   });
+}
+
+function buildFloristList(places, center, miles, addressField) {
+  var emojis = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
+  var colors = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
+  currentFlorists = places.map(function(place, i) {
+    var distM = 0;
+    try {
+      distM = google.maps.geometry.spherical.computeDistanceBetween(
+        new google.maps.LatLng(center.lat, center.lng),
+        place.geometry.location
+      );
+    } catch(e) {}
+    return {
+      id: i + 1,
+      name: place.name,
+      address: place[addressField] || place.vicinity || place.formatted_address || '',
+      website: '#',
+      rating: place.rating || 0,
+      reviews: place.user_ratings_total || 0,
+      specialties: ['Local Florist'],
+      sameDay: false,
+      emoji: emojis[i % emojis.length],
+      color: colors[i % colors.length],
+      distance: parseFloat((distM / 1609).toFixed(1)),
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+      placeId: place.place_id
+    };
+  }).sort(function(a, b) { return a.distance - b.distance; });
+  applyFilter();
+  plotMarkers();
+}
+
+function showDemoData(center, miles) {
+  // Show demo florists so the page is never empty while API is being configured
+  document.getElementById('resultsMeta').textContent =
+    'Showing sample results — live data loads once API is fully active';
+  currentFlorists = FLORISTS_DEMO;
+  // Reposition demo florists around the searched center
+  currentFlorists = FLORISTS_DEMO.map(function(f, i) {
+    var offset = (i + 1) * 0.012;
+    return Object.assign({}, f, {
+      lat: center.lat + (i % 2 === 0 ? offset : -offset * 0.5),
+      lng: center.lng + (i % 2 === 0 ? -offset * 0.5 : offset)
+    });
+  });
+  applyFilter();
+  plotMarkers();
+  if (center && map) {
+    map.setCenter(center);
+    map.setZoom(13);
+  }
 }
 
 function doSearch() {
