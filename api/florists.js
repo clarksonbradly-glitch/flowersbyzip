@@ -73,9 +73,11 @@ export default async function handler(req, res) {
               if (centerLat && centerLng) {
                 distance = haversine(centerLat, centerLng, floristLat, floristLng);
               }
+            } else {
+              console.error('Geocode failed for address:', address, 'status:', geoData.status, 'error:', geoData.error_message);
             }
           } catch (e) {
-            // If geocoding fails, still include the florist without distance
+            console.error('Geocode exception:', e.message);
           }
         }
 
@@ -121,7 +123,14 @@ export default async function handler(req, res) {
     return res.status(200).json({
       florists: nearby,
       total: nearby.length,
-      center: { lat: centerLat, lng: centerLng }
+      center: { lat: centerLat, lng: centerLng },
+      debug: {
+        mapsKeyPresent: !!(process.env.GOOGLE_MAPS_KEY),
+        mapsKeyLength: (process.env.GOOGLE_MAPS_KEY || '').length,
+        centerLat: centerLat,
+        centerLng: centerLng,
+        recordCount: records.length
+      }
     });
 
   } catch (err) {
