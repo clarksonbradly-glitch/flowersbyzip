@@ -252,6 +252,57 @@ function initMap() {
   }
 }
 
+// Run search from URL even if Maps API hasn't loaded yet
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const zip = params.get('zip');
+  if (zip) {
+    document.getElementById('zipInput').value = zip;
+    document.getElementById('zipDisplay').textContent = zip;
+    // Search Airtable directly without needing the map
+    searchAirtable(zip, null);
+  }
+})();
+
+function searchAirtable(query, center) {
+  document.getElementById('resultsMeta').textContent = 'Searching…';
+  document.getElementById('floristList').innerHTML =
+    '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">🦉 Zip is finding independent florists near you…</div>';
+
+  var url = '/api/florists?zip=' + encodeURIComponent(query) + '&radius=' + document.getElementById('radiusSlider').value;
+  if (center) url = '/api/florists?lat=' + center.lat + '&lng=' + center.lng + '&radius=' + document.getElementById('radiusSlider').value;
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      clearMarkers();
+      if (data.florists && data.florists.length > 0) {
+        currentFlorists = data.florists;
+        applyFilter();
+        if (map && data.center) {
+          map.setCenter({ lat: data.center.lat, lng: data.center.lng });
+          map.setZoom(13);
+          dropCenterPin(data.center);
+        }
+        plotMarkers();
+      } else {
+        document.getElementById('resultsMeta').textContent = 'No independent florists listed here yet';
+        document.getElementById('floristList').innerHTML =
+          '<div style="text-align:center;padding:2rem;color:var(--muted);">' +
+          '<div style="font-size:2rem;margin-bottom:0.8rem">🦉</div>' +
+          '<strong style="color:var(--green);display:block;margin-bottom:0.5rem">Zip says:</strong>' +
+          'No independent florists are listed in this area yet.<br><br>' +
+          'Are you a florist here? <a href="register.html" style="color:var(--green);font-weight:600">List your shop free →</a>' +
+          '</div>';
+      }
+    })
+    .catch(function() {
+      document.getElementById('resultsMeta').textContent = 'Connection error — please try again';
+      document.getElementById('floristList').innerHTML =
+        '<div style="text-align:center;padding:2rem;color:var(--muted);">Unable to reach the server. Please refresh and try again.</div>';
+    });
+}
+
 function geocodeAndSearch(zip) {
   document.getElementById('resultsMeta').textContent = 'Searching…';
   document.getElementById('zipDisplay').textContent = zip;
@@ -433,7 +484,7 @@ function applyFilter() {
 function updateRadius(val) {
   document.getElementById('radiusVal').textContent = val + ' miles';
   var zip = document.getElementById('zipInput').value.trim();
-  if (zip.length >= 2) geocodeAndSearch(zip);
+  if (zip.length >= 2) searchAirtable(zip, null);
 }
 
 function doSearch() {
