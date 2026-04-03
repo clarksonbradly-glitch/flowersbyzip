@@ -248,7 +248,7 @@ function initMap() {
   if (zip) {
     document.getElementById('zipInput').value = zip;
     document.getElementById('zipDisplay').textContent = zip;
-    geocodeAndSearch(zip);
+    searchAirtable(zip, null);
   }
 }
 
@@ -259,7 +259,6 @@ function initMap() {
   if (zip) {
     document.getElementById('zipInput').value = zip;
     document.getElementById('zipDisplay').textContent = zip;
-    // Search Airtable directly without needing the map
     searchAirtable(zip, null);
   }
 })();
@@ -488,11 +487,12 @@ function updateRadius(val) {
 }
 
 function doSearch() {
-  var zip = document.getElementById('zipInput').value.trim();
-  if (zip.length >= 2) {
-    document.getElementById('zipDisplay').textContent = zip;
-    geocodeAndSearch(zip);
+  var query = document.getElementById('zipInput').value.trim();
+  if (query.length >= 2) {
+    document.getElementById('zipDisplay').textContent = query;
+    searchAirtable(query, null);
   }
+}
 }
 
 function visitShop(url) {
