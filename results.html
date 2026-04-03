@@ -410,7 +410,7 @@ function renderCards(data) {
         '<div class="card-rating"><span class="stars">' + stars + '</span></div>' +
         '<div class="card-actions">' +
           '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(this.dataset.url)" data-url="' + (f.website||'#') + '">Visit Shop →</button>' +
-          '<button class="btn-report" onclick="event.stopPropagation();openReport(' + f.id + ')" title="Report listing">🚩</button>' +
+          '<button class="btn-report" onclick="event.stopPropagation();openReport(' + i + ')" title="Report this listing" style="background:none;border:1.5px solid #ddd;border-radius:1.5rem;padding:0.35rem 0.7rem;font-size:0.72rem;color:#888;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.15s;" onmouseover="this.style.borderColor='#e84040';this.style.color='#e84040'" onmouseout="this.style.borderColor='#ddd';this.style.color='#888'">⚑ Report</button>' +
         '</div>' +
       '</div>';
     card.onclick = function() { selectFlorist(f.id); };
@@ -455,8 +455,8 @@ function openProfile() {
 }
 
 // ─── REPORT ───────────────────────────────────────────────
-function openReport(id) {
-  reportingFlorist = currentFlorists.find(function(f) { return f.id === id; });
+function openReport(index) {
+  reportingFlorist = currentFlorists[index] || null;
   selectedReason = null;
   document.querySelectorAll('.report-option').forEach(function(o) { o.classList.remove('selected'); });
   document.getElementById('reportComment').value = '';

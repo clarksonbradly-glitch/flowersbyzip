@@ -225,6 +225,22 @@ nav {
   .profile-body { grid-template-columns: 1fr; }
   nav { padding: 0 1rem; }
 }
+
+/* REPORT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:1.2rem;padding:1.8rem;width:90%;max-width:420px;animation:modalIn 0.2s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.report-options{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.2rem;}
+.report-option{display:flex;align-items:center;gap:0.6rem;background:var(--cream);border:1.5px solid var(--border);border-radius:0.6rem;padding:0.6rem 0.9rem;cursor:pointer;transition:all 0.15s;font-size:0.85rem;font-family:'DM Sans',sans-serif;text-align:left;}
+.report-option:hover,.report-option.selected{border-color:var(--sage);background:#eef4ee;}
+.report-comment{width:100%;border:1.5px solid var(--border);border-radius:0.6rem;padding:0.6rem 0.8rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;resize:none;height:70px;outline:none;margin-bottom:0.8rem;}
+.report-comment:focus{border-color:var(--sage);}
+.modal-actions{display:flex;gap:0.6rem;justify-content:flex-end;margin-top:0.5rem;}
+.btn-cancel{background:none;border:1.5px solid var(--border);color:var(--muted);padding:0.5rem 1.1rem;border-radius:1.5rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;}
+.btn-submit-report{background:var(--green);color:white;border:none;padding:0.5rem 1.2rem;border-radius:1.5rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;}
+.report-success{text-align:center;padding:1rem 0;}
+.report-success p{font-size:0.88rem;color:var(--muted);line-height:1.6;}
 </style>
 </head>
 <body>
@@ -250,6 +266,7 @@ nav {
     <div class="hero-actions">
       <button class="btn-primary" onclick="visitShop()">Visit Their Website →</button>
       <button class="btn-outline-light" id="phoneBtn">📞 Call Shop</button>
+      <button class="btn-outline-light" onclick="openReport()" style="font-size:0.78rem;opacity:0.7;">⚑ Report Listing</button>
     </div>
   </div>
   <div class="stats-bar">
@@ -501,6 +518,107 @@ function switchTab(name, btn) {
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
 }
+</script>
+
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="reportModal">
+  <div class="modal">
+    <div id="reportForm">
+      <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.8rem;">
+        <svg width="36" height="36" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/><ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/><path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><path d="M22,51 Q26,46 30,51 Q34,46 38,51 Q41,47 43,51" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><circle cx="32" cy="24" r="16" fill="#1a3a2a"/><path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/><path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/><path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/><path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/><circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="24" cy="24" r="5.2" fill="#c9a84c"/><circle cx="40" cy="24" r="5.2" fill="#c9a84c"/><circle cx="24" cy="24" r="3" fill="#1a3a2a"/><circle cx="40" cy="24" r="3" fill="#1a3a2a"/><circle cx="25.5" cy="22.5" r="1.2" fill="white"/><circle cx="41.5" cy="22.5" r="1.2" fill="white"/><path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/><path d="M13.5,38 Q10,45 13,54 Q16,45 18,40" fill="#2d5c3f"/><path d="M50.5,38 Q54,45 51,54 Q48,45 46,40" fill="#2d5c3f"/><line x1="25" y1="62" x2="21" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="25" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="29" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="35" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="39" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="43" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3 style="margin:0;font-family:'Playfair Display',serif;font-size:1.1rem;color:#1a3a2a;">Report a Listing</h3>
+      </div>
+      <p id="reportShopName" style="font-weight:600;color:#1a3a2a;margin-bottom:0.4rem;font-size:0.88rem;"></p>
+      <p style="font-size:0.82rem;color:#7a8a80;margin-bottom:1rem;line-height:1.6;">Help Zip keep FlowersByZip local. What's the issue with this listing?</p>
+      <div class="report-options">
+        <button class="report-option" onclick="selectReason(this,'not-local')">🏢 This is a wire service or not a local florist</button>
+        <button class="report-option" onclick="selectReason(this,'wrong-info')">📋 Wrong information (address, phone, website, etc.)</button>
+        <button class="report-option" onclick="selectReason(this,'closed')">🔒 This shop is permanently closed</button>
+        <button class="report-option" onclick="selectReason(this,'other')">💬 Other issue</button>
+      </div>
+      <textarea class="report-comment" id="reportComment" placeholder="Any additional details that would help Zip investigate… (optional)"></textarea>
+      <div style="font-size:0.72rem;color:#bbb;margin-bottom:0.8rem;line-height:1.5;">Submitting opens your email app with a pre-filled report to zip@flowersbyzip.com. We review all reports within 24 hours.</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeReport()">Cancel</button>
+        <button class="btn-submit-report" onclick="submitReport()">Send Report →</button>
+      </div>
+    </div>
+    <div class="report-success" id="reportSuccess" style="display:none;">
+      <svg width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/><ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/><path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><path d="M22,51 Q26,46 30,51 Q34,46 38,51 Q41,47 43,51" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><circle cx="32" cy="24" r="16" fill="#1a3a2a"/><path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/><path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/><path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/><path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/><circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="24" cy="24" r="5.2" fill="#c9a84c"/><circle cx="40" cy="24" r="5.2" fill="#c9a84c"/><circle cx="24" cy="24" r="3" fill="#1a3a2a"/><circle cx="40" cy="24" r="3" fill="#1a3a2a"/><circle cx="25.5" cy="22.5" r="1.2" fill="white"/><circle cx="41.5" cy="22.5" r="1.2" fill="white"/><path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/><path d="M13.5,38 Q10,45 13,54 Q16,45 18,40" fill="#2d5c3f"/><path d="M50.5,38 Q54,45 51,54 Q48,45 46,40" fill="#2d5c3f"/><line x1="25" y1="62" x2="21" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="25" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="25" y1="62" x2="29" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="35" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="39" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/><line x1="39" y1="62" x2="43" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <br><br>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#1a3a2a;margin-bottom:0.5rem;">Thanks for the heads up!</h3>
+      <p>Zip is on it. Your report has been sent to zip@flowersbyzip.com and we'll review this listing within 24 hours.<br><br>You're helping keep FlowersByZip genuinely local.</p>
+      <button class="btn-submit-report" onclick="closeReport()" style="margin-top:1.2rem;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var profileSelectedReason = null;
+var profileShopName = '';
+
+function openReport() {
+  profileShopName = document.getElementById('shopName').textContent || 'this florist';
+  profileSelectedReason = null;
+  document.querySelectorAll('.report-option').forEach(function(o){ o.classList.remove('selected'); });
+  document.getElementById('reportComment').value = '';
+  document.getElementById('reportShopName').textContent = profileShopName;
+  document.getElementById('reportForm').style.display = 'block';
+  document.getElementById('reportSuccess').style.display = 'none';
+  document.getElementById('reportModal').classList.add('open');
+}
+
+function closeReport() {
+  document.getElementById('reportModal').classList.remove('open');
+}
+
+function selectReason(el, reason) {
+  document.querySelectorAll('.report-option').forEach(function(o){ o.classList.remove('selected'); });
+  el.classList.add('selected');
+  profileSelectedReason = reason;
+}
+
+function submitReport() {
+  if (!profileSelectedReason) {
+    alert('Please select a reason for your report.');
+    return;
+  }
+  var reasonLabels = {
+    'not-local': 'This is a wire service or not a local florist',
+    'wrong-info': 'Wrong information (address, phone, website, etc.)',
+    'closed': 'This shop is permanently closed',
+    'other': 'Other issue'
+  };
+  var address = document.getElementById('shopSub') ? document.getElementById('shopSub').textContent : '';
+  var comment = document.getElementById('reportComment').value.trim();
+  var subject = encodeURIComponent('Listing Report — ' + profileShopName);
+  var body = encodeURIComponent(
+    'LISTING REPORT — FlowersByZip
+' +
+    '================================
+
+' +
+    'Shop Name: ' + profileShopName + '
+' +
+    'Address: ' + address + '
+' +
+    'Reason: ' + (reasonLabels[profileSelectedReason] || profileSelectedReason) + '
+' +
+    'Additional Details: ' + (comment || 'None provided') + '
+
+' +
+    'Submitted from: flowersbyzip.com/profile.html
+' +
+    'Timestamp: ' + new Date().toLocaleString()
+  );
+  window.location.href = 'mailto:zip@flowersbyzip.com?subject=' + subject + '&body=' + body;
+  document.getElementById('reportForm').style.display = 'none';
+  document.getElementById('reportSuccess').style.display = 'block';
+}
+
+document.getElementById('reportModal').addEventListener('click', function(e) {
+  if (e.target === this) closeReport();
+});
 </script>
 </body>
 </html>
