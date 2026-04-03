@@ -212,126 +212,107 @@ window.gm_authFailure = function() {
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&callback=initMap&loading=async" async defer></script>
 
 <script>
-let map, geocoder, placesService;
-let selectedId = null, activeFilter = 'all';
-let currentFlorists = [], currentMarkers = [];
-let centerMarker = null, radiusCircle = null;
-let reportingFlorist = null, selectedReason = null;
+// ─── STATE ───────────────────────────────────────────────
+var map, geocoder, placesService;
+var selectedId = null, activeFilter = 'all';
+var currentFlorists = [], currentMarkers = [];
+var centerMarker = null, radiusCircle = null;
+var reportingFlorist = null, selectedReason = null;
 
-const EMOJIS = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
-const COLORS = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
+var EMOJIS = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
+var COLORS = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
 
-const MAP_STYLE = [
-  { featureType:'poi', elementType:'labels', stylers:[{visibility:'off'}] },
-  { featureType:'transit', elementType:'labels', stylers:[{visibility:'off'}] },
-  { featureType:'water', stylers:[{color:'#c9e8d1'}] },
-  { featureType:'landscape', stylers:[{color:'#f5f0e8'}] },
-  { featureType:'road', elementType:'geometry', stylers:[{color:'#ffffff'}] },
-  { featureType:'road.arterial', elementType:'geometry', stylers:[{color:'#f0ebe0'}] },
+var FLORISTS_DEMO = [
+  {id:1,name:"Petal & Stem Studio",address:"1842 N. Halsted St, Chicago, IL",distance:0.4,emoji:"🌸",color:"#e8f2e8",specialties:["Weddings","Same-day delivery"],sameDay:true,rating:4.9,reviews:312,website:"#",lat:41.9145,lng:-87.6490},
+  {id:2,name:"Bloom & Co.",address:"2210 W. Armitage Ave, Chicago, IL",distance:1.1,emoji:"🌺",color:"#faeae4",specialties:["Custom arrangements","Events"],sameDay:false,rating:4.8,reviews:198,website:"#",lat:41.9178,lng:-87.6821},
+  {id:3,name:"The Garden Room",address:"512 W. Diversey Pkwy, Chicago, IL",distance:1.8,emoji:"🌼",color:"#faf3e0",specialties:["Weddings","Corporate"],sameDay:true,rating:5.0,reviews:487,website:"#",lat:41.9323,lng:-87.6432}
+];
+
+// ─── MAP INIT ─────────────────────────────────────────────
+var MAP_STYLE = [
+  {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+  {featureType:'water',stylers:[{color:'#c9e8d1'}]},
+  {featureType:'landscape',stylers:[{color:'#f5f0e8'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#ffffff'}]}
 ];
 
 function initMap() {
   geocoder = new google.maps.Geocoder();
   map = new google.maps.Map(document.getElementById('googleMap'), {
-    zoom: 11,
-    center: { lat: 39.5, lng: -98.35 },
-    styles: MAP_STYLE,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
+    zoom:11, center:{lat:29.4241,lng:-98.4936},
+    styles:MAP_STYLE, mapTypeControl:false,
+    streetViewControl:false, fullscreenControl:false
   });
-  placesService = new google.maps.places.PlacesService(map);
-
-  // Read ZIP from URL
-  const params = new URLSearchParams(window.location.search);
-  const zip = params.get('zip');
-  if (zip) {
-    document.getElementById('zipInput').value = zip;
-    document.getElementById('zipDisplay').textContent = zip;
-    searchAirtable(zip, null);
-  }
 }
 
-// Run search from URL even if Maps API hasn't loaded yet
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const zip = params.get('zip');
-  if (zip) {
-    document.getElementById('zipInput').value = zip;
-    document.getElementById('zipDisplay').textContent = zip;
-    searchAirtable(zip, null);
-  }
-})();
-
-function searchAirtable(query, center) {
+// ─── MAIN SEARCH ──────────────────────────────────────────
+function runSearch(query) {
+  if (!query || query.length < 2) return;
+  document.getElementById('zipDisplay').textContent = query;
   document.getElementById('resultsMeta').textContent = 'Searching…';
   document.getElementById('floristList').innerHTML =
-    '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">🦉 Zip is finding independent florists near you…</div>';
+    '<div style="text-align:center;padding:2rem;color:#7a8a80;font-size:0.88rem;">🦉 Zip is finding independent florists…</div>';
 
-  var url = '/api/florists?zip=' + encodeURIComponent(query) + '&radius=' + document.getElementById('radiusSlider').value;
-  if (center) url = '/api/florists?lat=' + center.lat + '&lng=' + center.lng + '&radius=' + document.getElementById('radiusSlider').value;
+  var radius = document.getElementById('radiusSlider').value || 25;
+  var url = '/api/florists?zip=' + encodeURIComponent(query) + '&radius=' + radius;
 
   fetch(url)
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+      if (!r.ok) throw new Error('API error ' + r.status);
+      return r.json();
+    })
     .then(function(data) {
-      clearMarkers();
       if (data.florists && data.florists.length > 0) {
         currentFlorists = data.florists;
-        applyFilter();
-        if (map && data.center) {
-          map.setCenter({ lat: data.center.lat, lng: data.center.lng });
+        // Update map center if we have it
+        if (map && data.center && data.center.lat) {
+          map.setCenter({lat: data.center.lat, lng: data.center.lng});
           map.setZoom(13);
-          dropCenterPin(data.center);
+          dropPin(data.center, true);
+          drawRadius(data.center, radius);
         }
+        applyFilter();
         plotMarkers();
       } else {
-        document.getElementById('resultsMeta').textContent = 'No independent florists listed here yet';
+        document.getElementById('resultsMeta').textContent = 'No florists listed in this area yet';
         document.getElementById('floristList').innerHTML =
-          '<div style="text-align:center;padding:2rem;color:var(--muted);">' +
-          '<div style="font-size:2rem;margin-bottom:0.8rem">🦉</div>' +
-          '<strong style="color:var(--green);display:block;margin-bottom:0.5rem">Zip says:</strong>' +
-          'No independent florists are listed in this area yet.<br><br>' +
-          'Are you a florist here? <a href="register.html" style="color:var(--green);font-weight:600">List your shop free →</a>' +
+          '<div style="text-align:center;padding:2rem;color:#7a8a80;">' +
+          '<div style="font-size:2.5rem;margin-bottom:0.8rem">🦉</div>' +
+          '<strong style="color:#1a3a2a;display:block;margin-bottom:0.5rem">Zip says:</strong>' +
+          'No independent florists are listed here yet.<br><br>' +
+          'Are you a florist? <a href="register.html" style="color:#1a3a2a;font-weight:700">List your shop free →</a>' +
           '</div>';
       }
     })
-    .catch(function() {
-      document.getElementById('resultsMeta').textContent = 'Connection error — please try again';
-      document.getElementById('floristList').innerHTML =
-        '<div style="text-align:center;padding:2rem;color:var(--muted);">Unable to reach the server. Please refresh and try again.</div>';
+    .catch(function(err) {
+      console.error('Search error:', err);
+      document.getElementById('resultsMeta').textContent = 'Showing demo results';
+      currentFlorists = FLORISTS_DEMO;
+      applyFilter();
+      plotMarkers();
     });
 }
 
-function geocodeAndSearch(zip) {
-  document.getElementById('resultsMeta').textContent = 'Searching…';
-  document.getElementById('zipDisplay').textContent = zip;
-  document.getElementById('floristList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">Finding florists near ' + zip + '…</div>';
-
-  geocoder.geocode({ address: zip + ', USA' }, function(results, status) {
-    if (status === 'OK' && results[0]) {
-      const loc = results[0].geometry.location;
-      const center = { lat: loc.lat(), lng: loc.lng() };
-      map.setCenter(center);
-      map.setZoom(13);
-      dropCenterPin(center);
-      searchNearby(center);
-    } else {
-      document.getElementById('resultsMeta').textContent = 'ZIP code not found — please try again';
-      document.getElementById('floristList').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Zip couldn't find that location. Please try a different ZIP code or city name.</div>';
-    }
-  });
+function doSearch() {
+  var q = document.getElementById('zipInput').value.trim();
+  if (q.length >= 2) runSearch(q);
 }
 
-function dropCenterPin(center) {
+function updateRadius(val) {
+  document.getElementById('radiusVal').textContent = val + ' miles';
+  var q = document.getElementById('zipInput').value.trim();
+  if (q.length >= 2) runSearch(q);
+}
+
+// ─── MAP HELPERS ──────────────────────────────────────────
+function dropPin(center, isYou) {
   if (centerMarker) centerMarker.setMap(null);
   centerMarker = new google.maps.Marker({
-    position: center,
-    map: map,
-    title: 'Your ZIP code location',
+    position: center, map: map,
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       scale: 10,
-      fillColor: '#4a90d9',
+      fillColor: isYou ? '#4a90d9' : '#1a3a2a',
       fillOpacity: 1,
       strokeColor: '#ffffff',
       strokeWeight: 3
@@ -340,46 +321,14 @@ function dropCenterPin(center) {
   });
 }
 
-function searchNearby(center) {
-  const miles = parseInt(document.getElementById('radiusSlider').value);
-
+function drawRadius(center, miles) {
   if (radiusCircle) radiusCircle.setMap(null);
+  if (!map) return;
   radiusCircle = new google.maps.Circle({
     map: map, center: center, radius: miles * 1609,
     strokeColor: '#2d5c3f', strokeOpacity: 0.25, strokeWeight: 2,
     fillColor: '#2d5c3f', fillOpacity: 0.04
   });
-
-  document.getElementById('floristList').innerHTML =
-    '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.88rem;">🦉 Zip is finding independent florists near you…</div>';
-
-  // Call Vercel API → queries Airtable for Approved florists only
-  fetch('/api/florists?lat=' + center.lat + '&lng=' + center.lng + '&radius=' + miles)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      clearMarkers();
-      if (data.florists && data.florists.length > 0) {
-        currentFlorists = data.florists;
-        applyFilter();
-        plotMarkers();
-      } else {
-        document.getElementById('resultsMeta').textContent = 'No independent florists listed here yet';
-        document.getElementById('floristList').innerHTML =
-          '<div style="text-align:center;padding:2rem;color:var(--muted);">' +
-          '<div style="font-size:2rem;margin-bottom:0.8rem">🦉</div>' +
-          '<strong style="color:var(--green);display:block;margin-bottom:0.5rem">Zip says:</strong>' +
-          'No independent florists are listed in this area yet.<br><br>' +
-          'Are you a florist here? <a href="register.html" style="color:var(--green);font-weight:600">List your shop free →</a>' +
-          '</div>';
-      }
-    })
-    .catch(function() {
-      // Fallback to demo data if API unavailable
-      document.getElementById('resultsMeta').textContent = 'Showing demo results · Connect to go live';
-      currentFlorists = FLORISTS_DEMO;
-      applyFilter();
-      plotMarkers();
-    });
 }
 
 function clearMarkers() {
@@ -389,22 +338,20 @@ function clearMarkers() {
 
 function plotMarkers() {
   clearMarkers();
+  if (!map) return;
   currentFlorists.forEach(function(f) {
+    if (!f.lat || !f.lng) return;
+    var svg = encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="140" height="34">' +
+      '<rect rx="8" ry="8" width="140" height="30" fill="#1a3a2a"/>' +
+      '<text x="8" y="21" font-family="sans-serif" font-size="13" fill="white" font-weight="600">' +
+      f.emoji + ' ' + f.name.substring(0,16) + (f.name.length > 16 ? '…' : '') +
+      '</text></svg>'
+    );
     var marker = new google.maps.Marker({
-      position: { lat: f.lat, lng: f.lng },
-      map: map,
-      title: f.name,
-      icon: {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
-          '<svg xmlns="http://www.w3.org/2000/svg" width="140" height="36">' +
-          '<rect rx="8" ry="8" width="140" height="32" fill="#1a3a2a"/>' +
-          '<text x="10" y="21" font-family="sans-serif" font-size="13" fill="white" font-weight="600">' +
-          f.emoji + ' ' + f.name.substring(0, 16) + (f.name.length > 16 ? '…' : '') +
-          '</text></svg>'
-        ),
-        scaledSize: new google.maps.Size(140, 36),
-        anchor: new google.maps.Point(0, 36)
-      }
+      position: {lat: parseFloat(f.lat), lng: parseFloat(f.lng)},
+      map: map, title: f.name,
+      icon: {url:'data:image/svg+xml;charset=UTF-8,' + svg, scaledSize: new google.maps.Size(140,34), anchor: new google.maps.Point(0,34)}
     });
     (function(florist) {
       marker.addListener('click', function() { selectFlorist(florist.id); });
@@ -413,10 +360,23 @@ function plotMarkers() {
   });
 }
 
+// ─── CARDS ────────────────────────────────────────────────
+function applyFilter() {
+  var data = currentFlorists.slice();
+  if (activeFilter === 'sameday') data = data.filter(function(f) { return f.sameDay; });
+  if (activeFilter === 'weddings') data = data.filter(function(f) {
+    return f.specialties && f.specialties.some(function(s) { return s.toLowerCase().includes('wedding'); });
+  });
+  document.getElementById('resultsMeta').textContent =
+    data.length + ' shop' + (data.length !== 1 ? 's' : '') + ' found · within ' +
+    document.getElementById('radiusSlider').value + ' miles';
+  renderCards(data);
+}
+
 function renderCards(data) {
   var list = document.getElementById('floristList');
-  if (data.length === 0) {
-    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No shops match this filter.</div>';
+  if (!data.length) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:#7a8a80;">No shops match this filter.</div>';
     return;
   }
   list.innerHTML = '';
@@ -424,22 +384,24 @@ function renderCards(data) {
     var card = document.createElement('div');
     card.className = 'florist-card' + (f.id === selectedId ? ' selected' : '');
     card.style.animationDelay = (i * 0.07) + 's';
-    var ratingStr = f.rating > 0 ? ('★'.repeat(Math.floor(f.rating)) + ' ' + f.rating + ' (' + f.reviews + ')') : 'No reviews yet';
+    var stars = f.rating > 0 ? ('★'.repeat(Math.floor(f.rating)) + ' ' + f.rating + ' (' + f.reviews + ')') : '';
+    var dist = f.distance ? f.distance + ' mi' : '';
+    var specs = (f.specialties || []).map(function(s) {
+      return '<span class="tag' + (s.toLowerCase().includes('same') ? ' same-day' : '') + '">' + s + '</span>';
+    }).join('');
+
     card.innerHTML =
       '<div class="card-top">' +
-        '<div class="card-icon" style="background:' + f.color + '">' + f.emoji + '</div>' +
+        '<div class="card-icon" style="background:' + (f.color||'#e8f2e8') + '">' + (f.emoji||'🌸') + '</div>' +
         '<div class="card-title-row"><h3>' + f.name + '</h3><div class="card-address">' + f.address + '</div></div>' +
-        '<div class="card-distance">' + f.distance + ' mi</div>' +
+        (dist ? '<div class="card-distance">' + dist + '</div>' : '') +
       '</div>' +
-      '<div class="card-tags">' +
-        (f.sameDay ? '<span class="tag same-day">⚡ Same-day</span>' : '') +
-        f.specialties.map(function(s) { return '<span class="tag">' + s + '</span>'; }).join('') +
-      '</div>' +
+      '<div class="card-tags">' + specs + '</div>' +
       '<div class="card-bottom">' +
-        '<div class="card-rating"><span class="stars">' + ratingStr + '</span></div>' +
+        '<div class="card-rating"><span class="stars">' + stars + '</span></div>' +
         '<div class="card-actions">' +
-          '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(\'' + f.website + '\')">Visit Shop →</button>' +
-          '<button class="btn-report" onclick="event.stopPropagation();openReport(' + f.id + ')" title="Report this listing">🚩</button>' +
+          '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop('' + (f.website||'#') + '')">Visit Shop →</button>' +
+          '<button class="btn-report" onclick="event.stopPropagation();openReport(' + f.id + ')" title="Report listing">🚩</button>' +
         '</div>' +
       '</div>';
     card.onclick = function() { selectFlorist(f.id); };
@@ -451,17 +413,20 @@ function selectFlorist(id) {
   selectedId = id;
   var f = currentFlorists.find(function(x) { return x.id === id; });
   if (!f) return;
-  if (map) { map.panTo({ lat: f.lat, lng: f.lng }); map.setZoom(15); }
+  if (map && f.lat && f.lng) {
+    map.panTo({lat: parseFloat(f.lat), lng: parseFloat(f.lng)});
+    map.setZoom(15);
+  }
   document.querySelectorAll('.florist-card').forEach(function(c, i) {
     c.classList.toggle('selected', currentFlorists[i] && currentFlorists[i].id === id);
   });
-  document.getElementById('popupName').textContent = f.emoji + ' ' + f.name;
-  document.getElementById('popupDetail').textContent = f.distance + ' mi · ' + f.address;
+  document.getElementById('popupName').textContent = (f.emoji||'🌸') + ' ' + f.name;
+  document.getElementById('popupDetail').textContent = (f.distance ? f.distance + ' mi · ' : '') + f.address;
   document.getElementById('popupVisitBtn').onclick = function() { visitShop(f.website); };
   document.getElementById('mapPopup').classList.add('visible');
   var cards = document.querySelectorAll('.florist-card');
   var idx = currentFlorists.findIndex(function(x) { return x.id === id; });
-  if (cards[idx]) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (cards[idx]) cards[idx].scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function toggleFilter(el, filter) {
@@ -471,40 +436,16 @@ function toggleFilter(el, filter) {
   applyFilter();
 }
 
-function applyFilter() {
-  var data = currentFlorists.slice();
-  if (activeFilter === 'sameday') data = data.filter(function(f) { return f.sameDay; });
-  if (activeFilter === 'weddings') data = data.filter(function(f) { return f.specialties.some(function(s) { return s.toLowerCase().includes('wedding'); }); });
-  document.getElementById('resultsMeta').textContent =
-    data.length + ' shop' + (data.length !== 1 ? 's' : '') + ' found · within ' + document.getElementById('radiusSlider').value + ' miles';
-  renderCards(data);
-}
-
-function updateRadius(val) {
-  document.getElementById('radiusVal').textContent = val + ' miles';
-  var zip = document.getElementById('zipInput').value.trim();
-  if (zip.length >= 2) searchAirtable(zip, null);
-}
-
-function doSearch() {
-  var query = document.getElementById('zipInput').value.trim();
-  if (query.length >= 2) {
-    document.getElementById('zipDisplay').textContent = query;
-    searchAirtable(query, null);
-  }
-}
-}
-
 function visitShop(url) {
   if (url && url !== '#') window.open(url, '_blank');
-  else alert('This florist\'s website will appear here once they register on FlowersByZip.');
+  else alert('This florist's website will appear here once they register on FlowersByZip.');
 }
 
 function openProfile() {
   if (selectedId) window.location = 'profile.html?id=' + selectedId;
 }
 
-// REPORT FUNCTIONS
+// ─── REPORT ───────────────────────────────────────────────
 function openReport(id) {
   reportingFlorist = currentFlorists.find(function(f) { return f.id === id; });
   selectedReason = null;
@@ -515,39 +456,36 @@ function openReport(id) {
   document.getElementById('reportingShopName').textContent = reportingFlorist ? reportingFlorist.name : '';
   document.getElementById('reportModal').classList.add('open');
 }
-
-function closeReport() {
-  document.getElementById('reportModal').classList.remove('open');
-  reportingFlorist = null;
-  selectedReason = null;
-}
-
+function closeReport() { document.getElementById('reportModal').classList.remove('open'); }
 function selectReason(el, reason) {
   document.querySelectorAll('.report-option').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
   selectedReason = reason;
 }
-
 function submitReport() {
-  if (!selectedReason) {
-    alert('Please select a reason for your report.');
-    return;
-  }
-  // In production: send to your backend / Airtable
-  console.log('Report submitted:', {
-    shop: reportingFlorist ? reportingFlorist.name : 'unknown',
-    reason: selectedReason,
-    comment: document.getElementById('reportComment').value,
-    timestamp: new Date().toISOString()
-  });
+  if (!selectedReason) { alert('Please select a reason.'); return; }
   document.getElementById('reportForm').style.display = 'none';
   document.getElementById('reportSuccess').style.display = 'block';
 }
 
-// Close modal on overlay click
 document.getElementById('reportModal').addEventListener('click', function(e) {
   if (e.target === this) closeReport();
 });
+
+// ─── KEYBOARD SEARCH ──────────────────────────────────────
+document.getElementById('zipInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
+});
+
+// ─── AUTO-SEARCH FROM URL ─────────────────────────────────
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var zip = params.get('zip');
+  if (zip) {
+    document.getElementById('zipInput').value = zip;
+    runSearch(zip);
+  }
+})();
 </script>
 </body>
 </html>
