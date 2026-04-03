@@ -3,13 +3,46 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { zip, lat, lng, radius = 25 } = req.query;
+  const { zip, lat, lng, radius = 25, id } = req.query;
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
+  const BASE_ID = process.env.AIRTABLE_BASE_ID;
+  const TABLE_ID = process.env.AIRTABLE_TABLE_ID;
+  const MAPS_KEY = process.env.GOOGLE_MAPS_KEY;
+
+  // Single florist lookup by Airtable record ID
+  if (id) {
+    try {
+      const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${id}`;
+      const r = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` } });
+      if (!r.ok) return res.status(404).json({ error: 'Florist not found' });
+      const record = await r.json();
+      const f = record.fields;
+      const specialties = Array.isArray(f['Specialties'])
+        ? f['Specialties']
+        : (f['Specialties'] ? f['Specialties'].split(',').map(s => s.trim()) : []);
+      return res.status(200).json({
+        id: record.id,
+        name: f['Shop Name'] || '',
+        owner: f['Owner Name'] || '',
+        address: [f['Street Address'], f['City'], f['State']].filter(Boolean).join(', '),
+        city: f['City'] || '',
+        state: f['State'] || '',
+        zip: f['ZIP Code'] || '',
+        phone: f['Phone'] || '',
+        email: f['Email'] || '',
+        website: f['Website'] || '#',
+        description: f['Description'] || '',
+        specialties: specialties,
+        yearEstablished: f['Year Established'] || null,
+        yearsInBusiness: f['Years in Business'] || null,
+        adminNotes: f['Admin Notes'] || '',
+      });
+    } catch(err) {
+      return res.status(500).json({ error: 'Server error', detail: err.message });
+    }
+  }
 
   try {
-    const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
-    const BASE_ID = process.env.AIRTABLE_BASE_ID;
-    const TABLE_ID = process.env.AIRTABLE_TABLE_ID;
-    const MAPS_KEY = process.env.GOOGLE_MAPS_KEY;
 
     // Fetch approved florists from Airtable
     const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?filterByFormula=({Status}="Approved")&pageSize=100`;
