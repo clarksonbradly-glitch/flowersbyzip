@@ -328,72 +328,120 @@ nav {
 </div>
 
 <script>
-const FLORISTS = [
-  { id:1, name:"Petal & Stem Studio", owner:"Maria Gonzalez", address:"1842 N. Halsted St, Chicago, IL", phone:"(312) 555-0182", website:"https://petalandstem.com", established:1998, specialties:["Weddings","Same-day delivery","Sympathy","Seasonal arrangements","Funeral flowers"], description:"Family-owned for over 25 years, Maria and her team handcraft every arrangement with seasonal blooms sourced from local growers whenever possible. What started as a small corner shop has grown into one of Lincoln Park's most beloved neighborhood institutions — but the personal touch has never changed.", hours:{Mon:"9am–6pm",Tue:"9am–6pm",Wed:"9am–6pm",Thu:"9am–6pm",Fri:"9am–7pm",Sat:"9am–5pm",Sun:"Closed"}, emoji:"🌸", color:"#e8f2e8", rating:4.9, reviews:312 },
-  { id:2, name:"Bloom & Co.", owner:"James & Theresa Park", address:"2210 W. Armitage Ave, Chicago, IL", phone:"(773) 555-0244", website:"https://bloomandco.com", established:2004, specialties:["Custom arrangements","Events","Subscriptions","Birthday flowers","Anniversary bouquets"], description:"Bloom & Co. believes flowers should tell a story. Every bouquet is a collaboration between the florist and the customer. James and Theresa Park founded the shop after years working in high-end floral design in New York — they brought that sophistication to Chicago's Bucktown neighborhood without the Manhattan price tag.", hours:{Mon:"10am–6pm",Tue:"10am–6pm",Wed:"10am–6pm",Thu:"10am–6pm",Fri:"10am–7pm",Sat:"10am–5pm",Sun:"11am–3pm"}, emoji:"🌺", color:"#faeae4", rating:4.8, reviews:198 },
-  { id:3, name:"The Garden Room", owner:"Eleanor Voss", address:"512 W. Diversey Pkwy, Chicago, IL", phone:"(312) 555-0371", website:"https://thegardenroom.com", established:1985, specialties:["Weddings","Corporate events","Floral design classes","Holiday decor","Large installations"], description:"Chicago's most beloved boutique florist since 1985. Eleanor has been designing flowers for four decades and still greets every customer personally. The Garden Room is a fixture of the Lakeview community — Eleanor has done flowers for thousands of weddings and has taught her craft to hundreds of students through her popular weekend workshops.", hours:{Mon:"9am–5pm",Tue:"9am–5pm",Wed:"9am–5pm",Thu:"9am–5pm",Fri:"9am–6pm",Sat:"9am–4pm",Sun:"Closed"}, emoji:"🌼", color:"#faf3e0", rating:5.0, reviews:487 },
-  { id:4, name:"Wildflower Workshop", owner:"Devon Achebe", address:"3104 N. Lincoln Ave, Chicago, IL", phone:"(773) 555-0509", website:"https://wildflowerworkshop.com", established:2016, specialties:["Dried flowers","Pressing & framing","Sustainability focus","Weekend workshops","Wildflower bouquets"], description:"Devon founded Wildflower Workshop to bring sustainably sourced, locally grown flowers to Chicago's north side. All flowers are sourced from within 150 miles of Chicago whenever the season allows. Devon also runs weekend workshops teaching pressing, drying, and arrangement — popular with both beginners and experienced flower lovers.", hours:{Mon:"Closed",Tue:"11am–6pm",Wed:"11am–6pm",Thu:"11am–6pm",Fri:"11am–7pm",Sat:"10am–5pm",Sun:"12pm–4pm"}, emoji:"🌻", color:"#f0f4e8", rating:4.7, reviews:143 }
-];
-
 const params = new URLSearchParams(window.location.search);
-const id = parseInt(params.get('id')) || 1;
-const f = FLORISTS.find(x => x.id === id) || FLORISTS[0];
+const recordId = params.get('id');
 
-// Populate hero
-document.getElementById('heroIcon').textContent = f.emoji;
-document.getElementById('heroIcon').style.background = f.color;
-document.getElementById('shopName').textContent = f.name;
-document.getElementById('shopSub').textContent = f.address + ' · Est. ' + f.established;
-document.getElementById('phoneBtn').textContent = '📞 ' + f.phone;
-document.getElementById('statYears').textContent = (2025 - f.established) + ' yrs';
-document.getElementById('statRating').textContent = f.rating;
-document.getElementById('statReviews').textContent = f.reviews;
+const EMOJIS = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
+const COLORS = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
 
-// About
-document.getElementById('shopDesc').textContent = f.description;
-document.getElementById('ownerName').textContent = f.owner;
+function populatePage(f, index) {
+  const emoji = EMOJIS[index % EMOJIS.length];
+  const color = COLORS[index % COLORS.length];
 
-// Contact sidebar
-document.getElementById('websiteLink').href = f.website;
-document.getElementById('phoneLink').href = 'tel:' + f.phone.replace(/\D/g,'');
-document.getElementById('phoneLink').textContent = f.phone;
-document.getElementById('addressSpan').textContent = f.address;
-document.getElementById('ratingNum').textContent = f.rating;
-document.getElementById('ratingStars').textContent = '★'.repeat(Math.round(f.rating)) + '☆'.repeat(5-Math.round(f.rating));
-document.getElementById('ratingCount').textContent = f.reviews + ' verified reviews';
+  // Hero
+  document.getElementById('heroIcon').textContent = emoji;
+  document.getElementById('heroIcon').style.background = color;
+  document.getElementById('shopName').textContent = f.name;
+  document.title = f.name + ' — FlowersByZip';
 
-// Hours
-const days = Object.keys(f.hours);
-const todayIdx = new Date().getDay();
-const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const todayName = dayNames[todayIdx];
-const table = document.getElementById('hoursTable');
-days.forEach(d => {
-  const tr = document.createElement('tr');
-  const isToday = d.startsWith(todayName);
-  if (isToday) tr.className = 'today-row';
-  tr.innerHTML = `<td>${d}${isToday ? '<span class="today-badge">Today</span>' : ''}</td><td>${f.hours[d]}</td>`;
-  table.appendChild(tr);
-});
+  const subParts = [];
+  if (f.address) subParts.push(f.address);
+  if (f.yearEstablished) subParts.push('Est. ' + f.yearEstablished);
+  document.getElementById('shopSub').textContent = subParts.join(' · ');
 
-// Specialties
-const grid = document.getElementById('specialtyGrid');
-f.specialties.forEach(s => {
-  const chip = document.createElement('div');
-  chip.className = 'specialty-chip';
-  chip.textContent = s;
-  grid.appendChild(chip);
-});
+  if (f.phone) {
+    document.getElementById('phoneBtn').textContent = '📞 ' + f.phone;
+    document.getElementById('phoneBtn').onclick = () => window.location = 'tel:' + f.phone.replace(/\D/g,'');
+  } else {
+    document.getElementById('phoneBtn').style.display = 'none';
+  }
+
+  // Stats
+  if (f.yearEstablished) {
+    document.getElementById('statYears').textContent = (new Date().getFullYear() - f.yearEstablished) + ' yrs';
+  } else {
+    document.getElementById('statYears').textContent = '—';
+  }
+  document.getElementById('statRating').textContent = f.rating > 0 ? f.rating : '—';
+  document.getElementById('statReviews').textContent = f.reviews > 0 ? f.reviews : '—';
+
+  // About tab
+  document.getElementById('shopDesc').textContent = f.description || 'An independent flower shop listed on FlowersByZip.';
+  document.getElementById('ownerName').textContent = f.owner || 'Independent shop owner';
+
+  // Contact sidebar
+  if (f.website && f.website !== '#') {
+    document.getElementById('websiteLink').href = f.website;
+    document.getElementById('websiteLink').textContent = f.website.replace(/^https?:\/\//, '');
+  } else {
+    document.getElementById('websiteLink').textContent = 'Website coming soon';
+  }
+
+  if (f.phone) {
+    document.getElementById('phoneLink').href = 'tel:' + f.phone.replace(/\D/g,'');
+    document.getElementById('phoneLink').textContent = f.phone;
+  } else {
+    document.getElementById('phoneLink').textContent = 'Contact via website';
+  }
+
+  document.getElementById('addressSpan').textContent = f.address || '—';
+
+  // Rating
+  if (f.rating > 0) {
+    document.getElementById('ratingNum').textContent = f.rating;
+    document.getElementById('ratingStars').textContent = '★'.repeat(Math.round(f.rating)) + '☆'.repeat(5 - Math.round(f.rating));
+    document.getElementById('ratingCount').textContent = f.reviews + ' verified reviews';
+  } else {
+    document.getElementById('ratingNum').textContent = '—';
+    document.getElementById('ratingStars').textContent = '';
+    document.getElementById('ratingCount').textContent = 'No reviews yet';
+  }
+
+  // Specialties
+  const grid = document.getElementById('specialtyGrid');
+  grid.innerHTML = '';
+  (f.specialties || []).forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'specialty-chip';
+    chip.textContent = s;
+    grid.appendChild(chip);
+  });
+
+  // Hours — hide tab if no hours data
+  document.getElementById('hoursTable').innerHTML =
+    '<tr><td colspan="2" style="color:var(--muted);font-size:0.85rem;padding:1rem 0;">Hours not listed — contact the shop directly.</td></tr>';
+
+  // Visit shop function
+  window.visitShop = function() {
+    if (f.website && f.website !== '#') window.open(f.website, '_blank');
+    else alert('Please call the shop directly: ' + (f.phone || 'See their listing'));
+  };
+}
+
+function showError() {
+  document.getElementById('shopName').textContent = 'Florist not found';
+  document.getElementById('shopSub').textContent = 'This listing may have been removed or is not yet approved.';
+  document.getElementById('shopDesc').textContent = '';
+}
+
+// Load florist data from Airtable via API
+if (recordId) {
+  fetch('/api/florists?id=' + recordId)
+    .then(r => r.json())
+    .then(f => {
+      if (f.error) { showError(); return; }
+      populatePage(f, 0);
+    })
+    .catch(() => showError());
+} else {
+  showError();
+}
 
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
-}
-
-function visitShop() {
-  window.open(f.website, '_blank');
 }
 </script>
 </body>
