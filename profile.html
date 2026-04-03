@@ -328,6 +328,50 @@ nav {
       <p>Zip says: When you order directly from this shop, <strong style="color:var(--cream)">100% of your purchase</strong> goes to them — no middleman fees, no commissions taken.</p>
       <button class="btn-sm-blush" onclick="visitShop()">Order Direct →</button>
     </div>
+
+    <!-- UPDATE LISTING CARD -->
+    <div class="sidebar-card" style="border:1.5px solid rgba(26,58,42,0.12);margin-top:0;">
+      <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;">
+        <svg width="36" height="36" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/>
+          <ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/>
+          <path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/>
+          <path d="M22,51 Q26,46 30,51 Q34,46 38,51 Q41,47 43,51" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/>
+          <circle cx="32" cy="24" r="16" fill="#1a3a2a"/>
+          <path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/>
+          <path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/>
+          <path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/>
+          <path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/>
+          <circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/>
+          <circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/>
+          <circle cx="24" cy="24" r="5.2" fill="#c9a84c"/>
+          <circle cx="40" cy="24" r="5.2" fill="#c9a84c"/>
+          <circle cx="24" cy="24" r="3" fill="#1a3a2a"/>
+          <circle cx="40" cy="24" r="3" fill="#1a3a2a"/>
+          <circle cx="25.5" cy="22.5" r="1.2" fill="white"/>
+          <circle cx="41.5" cy="22.5" r="1.2" fill="white"/>
+          <path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/>
+          <path d="M13.5,38 Q10,45 13,54 Q16,45 18,40" fill="#2d5c3f"/>
+          <path d="M50.5,38 Q54,45 51,54 Q48,45 46,40" fill="#2d5c3f"/>
+          <line x1="25" y1="62" x2="21" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="25" y1="62" x2="25" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="25" y1="62" x2="29" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="39" y1="62" x2="35" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="39" y1="62" x2="39" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="39" y1="62" x2="43" y2="64" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h4 style="margin-bottom:0;">Are you this florist?</h4>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;margin-bottom:0.9rem;">Need to update your hours, phone number, website, or other details? Send us a quick note and we'll get it updated within 24 hours.</p>
+      <a id="updateListingBtn"
+        href="#"
+        style="display:block;text-align:center;background:var(--green);color:var(--cream);border-radius:2rem;padding:0.6rem 1rem;font-size:0.82rem;font-weight:600;text-decoration:none;font-family:'DM Sans',sans-serif;transition:background 0.2s;"
+        onmouseover="this.style.background='#2d5c3f'"
+        onmouseout="this.style.background='#1a3a2a'">
+        ✏️ Update My Listing
+      </a>
+      <p style="font-size:0.7rem;color:#bbb;text-align:center;margin-top:0.6rem;line-height:1.5;">Replies from zip@flowersbyzip.com within 24hrs</p>
+    </div>
   </aside>
 </div>
 
@@ -414,6 +458,16 @@ function populatePage(f, index) {
   // Hours — hide tab if no hours data
   document.getElementById('hoursTable').innerHTML =
     '<tr><td colspan="2" style="color:var(--muted);font-size:0.85rem;padding:1rem 0;">Hours not listed — contact the shop directly.</td></tr>';
+
+  // Update My Listing email link - pre-filled with shop name
+  const subject = encodeURIComponent('Update My Listing — ' + f.name);
+  const body = encodeURIComponent(
+    'Hi Zip,\n\nI would like to update my listing on FlowersByZip.\n\nShop Name: ' + f.name + '\n\nHere are the changes I need:\n\n[Please describe your updates here]\n\nThank you!'
+  );
+  const updateBtn = document.getElementById('updateListingBtn');
+  if (updateBtn) {
+    updateBtn.href = 'mailto:zip@flowersbyzip.com?subject=' + subject + '&body=' + body;
+  }
 
   // Visit shop function
   window.visitShop = function() {
