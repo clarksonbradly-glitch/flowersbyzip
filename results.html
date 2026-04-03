@@ -400,7 +400,7 @@ function renderCards(data) {
       '<div class="card-bottom">' +
         '<div class="card-rating"><span class="stars">' + stars + '</span></div>' +
         '<div class="card-actions">' +
-          '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(\'' + (f.website||'#') + '\')">Visit Shop →</button>' +
+          '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(this.dataset.url)" data-url="' + (f.website||'#') + '">Visit Shop →</button>' +
           '<button class="btn-report" onclick="event.stopPropagation();openReport(' + f.id + ')" title="Report listing">🚩</button>' +
         '</div>' +
       '</div>';
@@ -438,7 +438,7 @@ function toggleFilter(el, filter) {
 
 function visitShop(url) {
   if (url && url !== '#') window.open(url, '_blank');
-  else alert('This florist's website will appear here once they register on FlowersByZip.');
+  else alert("This florist's website will appear here once they register on FlowersByZip.");
 }
 
 function openProfile() {
