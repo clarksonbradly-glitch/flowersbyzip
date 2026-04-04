@@ -327,36 +327,7 @@ input[type=range]{width:100%;accent-color:var(--green)}
 </div>
 
 <!-- REPORT MODAL -->
-<div class="modal-overlay" id="reportModal">
-  <div class="modal">
-    <div id="reportForm">
-      <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.8rem;">
-        <svg width="36" height="36" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/><ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/><path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><circle cx="32" cy="24" r="16" fill="#1a3a2a"/><path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/><path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/><path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/><path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/><circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="24" cy="24" r="5.2" fill="#c9a84c"/><circle cx="40" cy="24" r="5.2" fill="#c9a84c"/><circle cx="24" cy="24" r="3" fill="#1a3a2a"/><circle cx="40" cy="24" r="3" fill="#1a3a2a"/><circle cx="25.5" cy="22.5" r="1.2" fill="white"/><circle cx="41.5" cy="22.5" r="1.2" fill="white"/><path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/></svg>
-        <h3 style="margin:0;font-family:'Playfair Display',serif;color:var(--green);">Report a Listing</h3>
-      </div>
-      <p id="reportingShopName" style="font-weight:600;color:var(--green);margin-bottom:0.4rem;font-size:0.88rem;"></p>
-      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Help Zip keep FlowersByZip local. What's the issue with this listing?</p>
-      <div class="report-options">
-        <button class="report-option" onclick="selectReason(this,'not-local')">🏢 This is a wire service or not a local florist</button>
-        <button class="report-option" onclick="selectReason(this,'wrong-info')">📋 Wrong information (address, phone, website, etc.)</button>
-        <button class="report-option" onclick="selectReason(this,'closed')">🔒 This shop is permanently closed</button>
-        <button class="report-option" onclick="selectReason(this,'other')">💬 Other issue</button>
-      </div>
-      <textarea class="report-comment" id="reportComment" placeholder="Any additional details (optional)..."></textarea>
-      <p style="font-size:0.72rem;color:#bbb;margin-bottom:0.8rem;line-height:1.5;">Submitting opens your email app with a report to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="275d4e5767414b4850425554455e5d4e570944484a">[email&#160;protected]</a>. We review all reports within 24 hours.</p>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeReport()">Cancel</button>
-        <button class="btn-submit-report" onclick="submitReport()">Send Report</button>
-      </div>
-    </div>
-    <div id="reportSuccess" style="display:none;text-align:center;padding:1rem 0;">
-      <div style="font-size:2.5rem;margin-bottom:0.8rem;">🦉</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green);margin-bottom:0.5rem;">Thanks for the heads up!</h3>
-      <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;">Zip is on it. We'll review this listing within 24 hours and take action if needed.</p>
-      <button class="btn-submit-report" onclick="closeReport()" style="margin-top:1.2rem;">Close</button>
-    </div>
-  </div>
-</div>
+
 
 
 
@@ -613,7 +584,20 @@ function submitReport() {
   document.getElementById('reportSuccess').style.display = 'block';
 }
 
-document.getElementById('reportM
+document.getElementById('reportModal').addEventListener('click', function(e) { if (e.target === this) closeReport(); });
+document.getElementById('zipInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    var params = new URLSearchParams(window.location.search);
+    var zip = params.get('zip');
+    if (zip && currentFlorists.length === 0) {
+      document.getElementById('zipInput').value = zip;
+      if (map) doSearch();
+    }
+  }, 3000);
+});
+</script>
 
 <script>
 (function() {
