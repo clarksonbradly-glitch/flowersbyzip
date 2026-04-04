@@ -389,11 +389,11 @@ function doSearch() {
     map.setZoom(13);
 
     // Drop blue "you are here" pin
-    if (centerMarker) centerMarker.setMap(null);
-    centerMarker = new google.maps.Marker({
-      position: center, map: map,
-      icon: {path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#4a90d9', fillOpacity: 1, strokeColor: '#ffffff', strokeWeight: 3},
-      zIndex: 999
+    if (centerMarker) { try { centerMarker.map = null; } catch(e) {} }
+    var youDiv = document.createElement('div');
+    youDiv.style.cssText = 'width:16px;height:16px;border-radius:50%;background:#4a90d9;border:3px solid white;box-shadow:0 0 0 4px rgba(74,144,217,0.3),0 2px 8px rgba(0,0,0,0.3);';
+    centerMarker = new google.maps.marker.AdvancedMarkerElement({
+      position: center, map: map, title: 'Your location', content: youDiv, zIndex: 999
     });
 
     // Draw radius circle
@@ -407,12 +407,12 @@ function doSearch() {
     // Search for florists
     // Use Places API (New) via fetch
   var requestBody = {
-    includedTypes: ['florist', 'flower_delivery'],
+    includedTypes: ['florist'],
     maxResultCount: 20,
     locationRestriction: {
       circle: {
         center: {latitude: center.lat, longitude: center.lng},
-        radius: meters
+        radius: Math.min(meters, 49000)
       }
     }
   };
@@ -422,7 +422,7 @@ function doSearch() {
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': 'AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA',
-      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.websiteUri,places.id'
+      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.websiteUri,places.id,places.nationalPhoneNumber'
     },
     body: JSON.stringify(requestBody)
   })
