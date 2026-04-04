@@ -344,30 +344,23 @@ var COLORS = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0
 // Map style applied via backgroundColor
 
 function initMap() {
-  if (typeof google === "undefined" || !google.maps) { setTimeout(initMap, 500); return; }
-  try {
-    geocoder = new google.maps.Geocoder();
-    map = new google.maps.Map(document.getElementById('googleMap'), {
-      zoom: 11,
-      center: new google.maps.LatLng(29.4241, -98.4936),
-      mapTypeControl: false,
-      streetViewControl: false,
-      fullscreenControl: false
-    });
-    placesService = new google.maps.places.PlacesService(map);
-    map.addListener('tilesloaded', function() {
-      map.addListener = function(){}; // prevent firing twice
-      var params = new URLSearchParams(window.location.search);
-      var zip = params.get('zip');
-      if (zip) {
-        document.getElementById('zipInput').value = zip;
-        doSearch();
-      }
-    });
-  } catch(e) {
-    console.error('initMap error:', e);
-    document.getElementById('googleMap').innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#eef4ee;flex-direction:column;gap:1rem;padding:2rem;text-align:center"><p style="font-family:sans-serif;color:#1a3a2a;font-weight:600;">Map loading — please search above to find florists</p></div>';
+  if (typeof google === 'undefined' || !google.maps) { setTimeout(initMap, 500); return; }
+  geocoder = new google.maps.Geocoder();
+  map = new google.maps.Map(document.getElementById('googleMap'), {
+    zoom: 11,
+    center: {lat: 29.4241, lng: -98.4936},
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+    mapId: 'DEMO_MAP_ID'
+  });
+
+  // Auto-search from URL
+  var params = new URLSearchParams(window.location.search);
+  var zip = params.get('zip');
+  if (zip) {
+    document.getElementById('zipInput').value = zip;
+    setTimeout(function() { doSearch(); }, 1000);
   }
 }
 
@@ -412,46 +405,76 @@ function doSearch() {
     });
 
     // Search for florists
-    placesService.nearbySearch({
-      location: center,
-      radius: meters,
-      type: 'florist'
-    }, function(places, status) {
-      clearMarkers();
-      if (status === google.maps.places.PlacesServiceStatus.OK && places && places.length > 0) {
-        currentFlorists = places.map(function(place, i) {
-          var distM = 0;
-          try { distM = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(center.lat, center.lng), place.geometry.location); } catch(e) {}
-          return {
-            id: i + 1,
-            name: place.name,
-            address: place.vicinity || '',
-            website: '#',
-            rating: place.rating || 0,
-            reviews: place.user_ratings_total || 0,
-            specialties: ['Local Florist'],
-            sameDay: false,
-            emoji: EMOJIS[i % EMOJIS.length],
-            color: COLORS[i % COLORS.length],
-            distance: parseFloat((distM / 1609).toFixed(1)),
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-            placeId: place.place_id
-          };
-        }).sort(function(a, b) { return a.distance - b.distance; });
-        applyFilter();
-        plotMarkers();
-      } else {
-        document.getElementById('resultsMeta').textContent = 'No florists found';
-        document.getElementById('floristList').innerHTML =
-          '<div style="text-align:center;padding:2rem;color:var(--muted);">No florists found within ' + miles + ' miles.<br>Try increasing the radius.<br><br><a href="register.html" style="color:var(--green);font-weight:700;">Are you a florist? List free →</a></div>';
+    // Use Places API (New) via fetch
+  var requestBody = {
+    includedTypes: ['florist', 'flower_delivery'],
+    maxResultCount: 20,
+    locationRestriction: {
+      circle: {
+        center: {latitude: center.lat, longitude: center.lng},
+        radius: meters
       }
-    });
+    }
+  };
+
+  fetch('https://places.googleapis.com/v1/places:searchNearby', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': 'AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA',
+      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.websiteUri,places.id'
+    },
+    body: JSON.stringify(requestBody)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    clearMarkers();
+    var places = data.places || [];
+    if (places.length > 0) {
+      currentFlorists = places.map(function(place, i) {
+        var lat = place.location ? place.location.latitude : 0;
+        var lng = place.location ? place.location.longitude : 0;
+        var distM = 0;
+        try {
+          distM = google.maps.geometry.spherical.computeDistanceBetween(
+            new google.maps.LatLng(center.lat, center.lng),
+            new google.maps.LatLng(lat, lng)
+          );
+        } catch(e) {}
+        return {
+          id: i + 1,
+          name: place.displayName ? place.displayName.text : 'Florist',
+          address: place.formattedAddress || '',
+          website: place.websiteUri || '#',
+          rating: place.rating || 0,
+          reviews: place.userRatingCount || 0,
+          specialties: ['Local Florist'],
+          sameDay: false,
+          emoji: EMOJIS[i % EMOJIS.length],
+          color: COLORS[i % COLORS.length],
+          distance: parseFloat((distM / 1609).toFixed(1)),
+          lat: lat,
+          lng: lng,
+          placeId: place.id || ''
+        };
+      }).sort(function(a, b) { return a.distance - b.distance; });
+      applyFilter();
+      plotMarkers();
+    } else {
+      document.getElementById('resultsMeta').textContent = 'No florists found';
+      document.getElementById('floristList').innerHTML =
+        '<div style="text-align:center;padding:2rem;color:var(--muted);">No florists found within ' + miles + ' miles.<br>Try increasing the radius.<br><br><a href="register.html" style="color:var(--green);font-weight:700;">Are you a florist? List free →</a></div>';
+    }
+  })
+  .catch(function(err) {
+    console.error('Places API error:', err);
+    document.getElementById('resultsMeta').textContent = 'Search error — please try again';
+  });
   });
 }
 
 function clearMarkers() {
-  currentMarkers.forEach(function(m) { m.setMap(null); });
+  currentMarkers.forEach(function(m) { if (m.map !== undefined) { m.map = null; } else if (m.setMap) { m.setMap(null); } });
   currentMarkers = [];
 }
 
@@ -460,11 +483,18 @@ function plotMarkers() {
   currentFlorists.forEach(function(f) {
     if (!f.lat || !f.lng) return;
     var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="130" height="34"><rect rx="8" ry="8" width="130" height="30" fill="#1a3a2a"/><text x="8" y="21" font-family="sans-serif" font-size="13" fill="white" font-weight="600">' + f.emoji + ' ' + f.name.substring(0,15) + (f.name.length > 15 ? '...' : '') + '</text></svg>';
-    var marker = new google.maps.Marker({
-      position: {lat: f.lat, lng: f.lng}, map: map, title: f.name,
-      icon: {url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg), scaledSize: new google.maps.Size(130, 34), anchor: new google.maps.Point(0, 34)}
+    var pinDiv = document.createElement('div');
+    pinDiv.innerHTML = svg;
+    pinDiv.style.cursor = 'pointer';
+    var marker = new google.maps.marker.AdvancedMarkerElement({
+      position: {lat: f.lat, lng: f.lng},
+      map: map,
+      title: f.name,
+      content: pinDiv
     });
-    (function(florist) { marker.addListener('click', function() { selectFlorist(florist.id); }); })(f);
+    (function(florist, m) {
+      m.addListener('click', function() { selectFlorist(florist.id); });
+    })(f, marker);
     currentMarkers.push(marker);
   });
 }
@@ -602,7 +632,7 @@ window.addEventListener('load', function() {
 <script>
 (function() {
   var script = document.createElement('script');
-  script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&v=weekly';
+  script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry,marker&v=weekly&solution_channel=GMP_QB_addressselection_v1_cABC';
   script.async = true;
   script.defer = true;
   script.onload = function() { initMap(); };
