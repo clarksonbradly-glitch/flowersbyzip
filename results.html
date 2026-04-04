@@ -101,102 +101,8 @@ input[type=range]{width:100%;accent-color:var(--green)}
 </head>
 <body>
 
-
-
-<div class="app-layout">
-  <div class="results-panel">
-    <div class="results-header">
-      <h2>Florists near <span id="zipDisplay">—</span></h2>
-      <div class="results-meta" id="resultsMeta">Enter a ZIP code to search</div>
-    </div>
-    <div class="filters">
-      <div class="filter-chip active" onclick="toggleFilter(this,'all')">All shops</div>
-      <div class="filter-chip" onclick="toggleFilter(this,'sameday')">Same-day delivery</div>
-      <div class="filter-chip" onclick="toggleFilter(this,'weddings')">Weddings</div>
-    </div>
-    <div class="radius-control">
-      <div class="radius-label">Search radius: <span id="radiusVal">10 miles</span></div>
-      <input type="range" min="1" max="25" value="10" id="radiusSlider" oninput="updateRadius(this.value)" />
-    </div>
-    <div id="floristList"><div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.9rem;">Enter a ZIP code above to find florists near you 🌸</div></div>
-    <div class="owl-tip" style="margin-top:1rem;">
-      <svg width="56" height="56" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/></svg>
-      <div class="owl-tip-text"><strong>Zip says:</strong> When you order direct, your florist keeps more of every dollar. It's their most profitable order — and the best way to support a local business.</div>
-    </div>
-    <div class="mission-callout">
-      <h4>Why order direct?</h4>
-      <p>Wire service providers take up to 40% of your order before the florist sees a cent. Ordering directly means your full dollar supports a local business.</p>
-      <div class="mission-stat">
-        <div class="mstat"><div class="mstat-num">40%</div><div class="mstat-label">taken by wire services</div></div>
-        <div class="mstat"><div class="mstat-num">$200+</div><div class="mstat-label">monthly fees charged</div></div>
-        <div class="mstat"><div class="mstat-num">100%</div><div class="mstat-label">goes direct to florist</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="map-panel" id="mapPanel">
-    <div id="googleMap" style="width:100%;height:100%;"></div>
-    <div class="map-popup" id="mapPopup">
-      <div class="popup-name" id="popupName">—</div>
-      <div class="popup-detail" id="popupDetail">—</div>
-      <div class="popup-actions">
-        <button class="btn-sm btn-profile" onclick="openProfile()">View Profile</button>
-        <button class="btn-sm btn-visit" id="popupVisitBtn">Visit Shop →</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- REPORT MODAL -->
-<div class="modal-overlay" id="reportModal">
-  <div class="modal">
-    <div id="reportForm">
-      <div style="display:flex;align-items:center;gap:0.7rem;margin-bottom:0.8rem;">
-        <svg width="36" height="36" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="46" rx="18.5" ry="17.5" fill="#1a3a2a"/><ellipse cx="32" cy="49" rx="12" ry="11" fill="#f5f0e8"/><path d="M23,46 Q26,42 29,46 Q32,42 35,46 Q38,42 41,46" fill="none" stroke="#1a3a2a" stroke-width="0.9" stroke-linecap="round"/><circle cx="32" cy="24" r="16" fill="#1a3a2a"/><path d="M20,14 Q15,5 19,1 Q22,8 21,15" fill="#1a3a2a"/><path d="M44,14 Q49,5 45,1 Q42,8 43,15" fill="#1a3a2a"/><path d="M20,13 Q16,6 19,3 Q21,9 21,14" fill="#2d5c3f"/><path d="M44,13 Q48,6 45,3 Q43,9 43,14" fill="#2d5c3f"/><circle cx="24" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="40" cy="24" r="7.5" fill="#f5f0e8"/><circle cx="24" cy="24" r="5.2" fill="#c9a84c"/><circle cx="40" cy="24" r="5.2" fill="#c9a84c"/><circle cx="24" cy="24" r="3" fill="#1a3a2a"/><circle cx="40" cy="24" r="3" fill="#1a3a2a"/><circle cx="25.5" cy="22.5" r="1.2" fill="white"/><circle cx="41.5" cy="22.5" r="1.2" fill="white"/><path d="M32,28 L29,32 L35,32 Z" fill="#c9a84c"/></svg>
-        <h3 style="margin:0;font-family:'Playfair Display',serif;color:var(--green);">Report a Listing</h3>
-      </div>
-      <p id="reportingShopName" style="font-weight:600;color:var(--green);margin-bottom:0.4rem;font-size:0.88rem;"></p>
-      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">Help Zip keep FlowersByZip local. What's the issue with this listing?</p>
-      <div class="report-options">
-        <button class="report-option" onclick="selectReason(this,'not-local')">🏢 This is a wire service or not a local florist</button>
-        <button class="report-option" onclick="selectReason(this,'wrong-info')">📋 Wrong information (address, phone, website, etc.)</button>
-        <button class="report-option" onclick="selectReason(this,'closed')">🔒 This shop is permanently closed</button>
-        <button class="report-option" onclick="selectReason(this,'other')">💬 Other issue</button>
-      </div>
-      <textarea class="report-comment" id="reportComment" placeholder="Any additional details (optional)..."></textarea>
-      <p style="font-size:0.72rem;color:#bbb;margin-bottom:0.8rem;line-height:1.5;">Submitting opens your email app with a report to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="275d4e5767414b4850425554455e5d4e570944484a">[email&#160;protected]</a>. We review all reports within 24 hours.</p>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeReport()">Cancel</button>
-        <button class="btn-submit-report" onclick="submitReport()">Send Report</button>
-      </div>
-    </div>
-    <div id="reportSuccess" style="display:none;text-align:center;padding:1rem 0;">
-      <div style="font-size:2.5rem;margin-bottom:0.8rem;">🦉</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green);margin-bottom:0.5rem;">Thanks for the heads up!</h3>
-      <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;">Zip is on it. We'll review this listing within 24 hours and take action if needed.</p>
-      <button class="btn-submit-report" onclick="closeReport()" style="margin-top:1.2rem;">Close</button>
-    </div>
-  </div>
-</div>
-
-
-
-E html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowersByZip — Find Local Florists</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-</head>
-<body>
-
 <nav>
-  <a class="logo" href="index.html" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><svg width="36" height="36" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><path d="M58,106 Q65,98 72,106 Q79,98 86,106 Q93,98 100,106" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><path d="M55,116 Q63,107 71,116 Q79,107 87,116 Q95,107 103,116" fill="none" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/></svg><span style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#1a3a2a;">flowers<span style="color:#7a9e7e;font-style:italic;">by</span>zip</span></a>
+  <a class="logo" href="index.html" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;"><svg width="36" height="36" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg"><ellipse cx="80" cy="104" rx="46" ry="44" fill="#1a3a2a"/><ellipse cx="80" cy="112" rx="30" ry="28" fill="#f5f0e8"/><circle cx="80" cy="62" r="40" fill="#1a3a2a"/><path d="M50,36 Q40,18 48,10 Q54,22 52,38" fill="#1a3a2a"/><path d="M110,36 Q120,18 112,10 Q106,22 108,38" fill="#1a3a2a"/><path d="M50,34 Q43,20 49,13 Q53,24 51,35" fill="#2d5c3f"/><path d="M110,34 Q117,20 111,13 Q107,24 109,35" fill="#2d5c3f"/><circle cx="60" cy="62" r="18" fill="#f5f0e8"/><circle cx="100" cy="62" r="18" fill="#f5f0e8"/><circle cx="60" cy="62" r="13" fill="#c9a84c"/><circle cx="100" cy="62" r="13" fill="#c9a84c"/><circle cx="60" cy="62" r="8" fill="#1a3a2a"/><circle cx="100" cy="62" r="8" fill="#1a3a2a"/><circle cx="64" cy="57" r="3" fill="white"/><circle cx="104" cy="57" r="3" fill="white"/><path d="M80,70 L74,80 L86,80 Z" fill="#c9a84c"/></svg><span style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#1a3a2a;">flowers<span style="color:#7a9e7e;font-style:italic;">by</span>zip</span></a>
   <div class="nav-search">
     <input type="text" id="zipInput" placeholder="ZIP code or city, state..." />
     <button class="nav-search-btn" onclick="doSearch()">Search</button>
@@ -207,7 +113,7 @@ E html>
 <div class="app-layout">
   <div class="results-panel">
     <div class="results-header">
-      <h2>Florists near <span id="zipDisplay">—</span></h2>
+      
       <div class="results-meta" id="resultsMeta">Enter a ZIP code to search</div>
     </div>
     <div class="filters">
