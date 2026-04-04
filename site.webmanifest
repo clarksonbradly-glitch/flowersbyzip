@@ -1,0 +1,12 @@
+{
+  "name": "FlowersByZip",
+  "short_name": "FlowersByZip",
+  "description": "Find local independent florists near you",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "theme_color": "#1a3a2a",
+  "background_color": "#f5f0e8",
+  "display": "standalone",
+  "start_url": "/"
+}

@@ -428,6 +428,7 @@ function doSearch() {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
+    console.log('Places API response:', data);
     clearMarkers();
     var places = data.places || [];
     if (places.length > 0) {
