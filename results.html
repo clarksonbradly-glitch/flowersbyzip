@@ -58,6 +58,15 @@ input[type=range]{width:100%;accent-color:var(--green)}
 .btn-profile:hover{border-color:var(--sage)}
 .btn-report{background:none;border:1.5px solid #ddd;border-radius:1.5rem;padding:0.35rem 0.8rem;font-size:0.72rem;color:#888;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.15s}
 .btn-report:hover{border-color:#e84040;color:#e84040}
+/* VERIFIED REGISTERED SHOP CARD */
+.florist-card.verified{border-color:var(--gold);background:linear-gradient(to bottom right,white,#fffdf5)}
+.florist-card.verified:hover,.florist-card.verified.selected{border-color:var(--gold);box-shadow:0 6px 24px rgba(201,168,76,0.2);transform:translateX(3px)}
+.verified-badge-card{display:inline-flex;align-items:center;gap:0.3rem;background:var(--green);color:var(--cream);font-size:0.65rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:1rem;letter-spacing:0.04em;margin-bottom:0.5rem}
+.claim-btn{background:none;border:1.5px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:500;padding:0.35rem 0.8rem;border-radius:1.5rem;cursor:pointer;transition:all 0.15s}
+.claim-btn:hover{border-color:var(--sage);color:var(--green)}
+.unverified-note{font-size:0.68rem;color:#bbb;margin-top:0.5rem;font-style:italic}
+.section-divider{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:0.6rem 0 0.4rem;border-top:1px solid var(--border);margin-top:0.4rem}
+
 .mission-callout{background:var(--green);color:var(--cream);border-radius:1rem;padding:1.2rem;margin-top:1rem}
 .mission-callout h4{font-family:'Playfair Display',serif;font-size:0.95rem;margin-bottom:0.5rem}
 .mission-callout p{font-size:0.78rem;line-height:1.6;color:#b8ccbe}
@@ -442,7 +451,7 @@ function doSearch() {
             new google.maps.LatLng(lat, lng)
           );
         } catch(e) {}
-        return {
+        var floristData = {
           id: i + 1,
           name: place.displayName ? place.displayName.text : 'Florist',
           address: place.formattedAddress || '',
@@ -456,8 +465,12 @@ function doSearch() {
           distance: parseFloat((distM / 1609).toFixed(1)),
           lat: lat,
           lng: lng,
-          placeId: place.id || ''
+          placeId: place.id || '',
+          registered: false,
+          description: ''
         };
+        floristData.registered = isRegistered(floristData);
+        return floristData;
       }).sort(function(a, b) { return a.distance - b.distance; });
       applyFilter();
       plotMarkers();
@@ -508,6 +521,20 @@ function applyFilter() {
   renderCards(data);
 }
 
+
+// Registered shops from your database (will come from Airtable in production)
+var REGISTERED_SHOPS = [
+  // Example: { name: "Angel Bloom Florist", address: "2026 SW Loop 410" }
+  // Add real registered shops here as they sign up
+];
+
+function isRegistered(florist) {
+  return REGISTERED_SHOPS.some(function(r) {
+    return florist.name.toLowerCase().includes(r.name.toLowerCase().substring(0, 8)) ||
+           (r.address && florist.address.toLowerCase().includes(r.address.toLowerCase().substring(0, 10)));
+  });
+}
+
 function renderCards(data) {
   var list = document.getElementById('floristList');
   if (!data.length) {
@@ -515,26 +542,81 @@ function renderCards(data) {
     return;
   }
   list.innerHTML = '';
-  data.forEach(function(f, i) {
+
+  // Split into registered and unregistered
+  var verified = data.filter(function(f) { return f.registered; });
+  var unverified = data.filter(function(f) { return !f.registered; });
+
+  // Show verified first then unverified
+  var ordered = verified.concat(unverified);
+
+  // Section header if we have both
+  var addedDivider = false;
+
+  ordered.forEach(function(f, i) {
+    // Add divider between verified and unverified sections
+    if (!addedDivider && !f.registered && verified.length > 0) {
+      var divider = document.createElement('div');
+      divider.className = 'section-divider';
+      divider.textContent = 'Other florists in this area';
+      list.appendChild(divider);
+      addedDivider = true;
+    }
+
     var card = document.createElement('div');
-    card.className = 'florist-card' + (f.id === selectedId ? ' selected' : '');
-    card.style.animationDelay = (i * 0.07) + 's';
+    var isVerified = f.registered;
+    card.className = 'florist-card' + (isVerified ? ' verified' : '') + (f.id === selectedId ? ' selected' : '');
+    card.style.animationDelay = (i * 0.06) + 's';
+
     var ratingStr = f.rating > 0 ? '<span class="stars">' + '★'.repeat(Math.floor(f.rating)) + '</span> ' + f.rating + ' (' + f.reviews + ')' : '';
     var distStr = f.distance ? f.distance + ' mi' : '';
-    card.innerHTML =
-      '<div class="card-top">' +
-        '<div class="card-icon" style="background:' + f.color + '">' + f.emoji + '</div>' +
-        '<div class="card-title-row"><h3>' + f.name + '</h3><div class="card-address">' + f.address + '</div></div>' +
-        (distStr ? '<div class="card-distance">' + distStr + '</div>' : '') +
-      '</div>' +
-      '<div class="card-tags"><span class="tag">Local Florist</span></div>' +
-      '<div class="card-bottom">' +
-        '<div class="card-rating">' + ratingStr + '</div>' +
-        '<div class="card-actions">' +
-          '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(' + i + ')">Visit Shop</button>' +
-          '<button class="btn-report" onclick="event.stopPropagation();openReport(' + i + ')">Report</button>' +
+
+    if (isVerified) {
+      // VERIFIED REGISTERED CARD - full details
+      card.innerHTML =
+        '<div class="verified-badge-card">✓ Verified Local Florist</div>' +
+        '<div class="card-top">' +
+          '<div class="card-icon" style="background:' + f.color + '">' + f.emoji + '</div>' +
+          '<div class="card-title-row">' +
+            '<h3>' + f.name + '</h3>' +
+            '<div class="card-address">' + f.address + '</div>' +
+          '</div>' +
+          (distStr ? '<div class="card-distance">' + distStr + '</div>' : '') +
         '</div>' +
-      '</div>';
+        (f.description ? '<div style="font-size:0.78rem;color:#4a5a50;line-height:1.5;margin-bottom:0.7rem;">' + f.description + '</div>' : '') +
+        '<div class="card-tags">' +
+          (f.sameDay ? '<span class="tag same-day">⚡ Same-day</span>' : '') +
+          (f.specialties || []).map(function(s) { return '<span class="tag">' + s + '</span>'; }).join('') +
+        '</div>' +
+        '<div class="card-bottom">' +
+          '<div class="card-rating">' + ratingStr + '</div>' +
+          '<div class="card-actions">' +
+            '<button class="btn-sm btn-visit" onclick="event.stopPropagation();visitShop(' + data.indexOf(f) + ')" style="background:var(--green);">Visit Shop →</button>' +
+            '<button class="btn-report" onclick="event.stopPropagation();openReport(' + data.indexOf(f) + ')">Report</button>' +
+          '</div>' +
+        '</div>';
+    } else {
+      // UNVERIFIED BASIC CARD
+      var claimUrl = 'register.html?shop=' + encodeURIComponent(f.name) + '&address=' + encodeURIComponent(f.address);
+      card.innerHTML =
+        '<div class="card-top">' +
+          '<div class="card-icon" style="background:' + f.color + ';opacity:0.7;">' + f.emoji + '</div>' +
+          '<div class="card-title-row">' +
+            '<h3 style="color:#555;">' + f.name + '</h3>' +
+            '<div class="card-address">' + f.address + '</div>' +
+          '</div>' +
+          (distStr ? '<div class="card-distance">' + distStr + '</div>' : '') +
+        '</div>' +
+        '<div class="card-bottom">' +
+          '<div class="card-rating">' + ratingStr + '</div>' +
+          '<div class="card-actions">' +
+            '<button class="claim-btn" onclick="event.stopPropagation();window.location='' + claimUrl + ''">🌸 Claim Listing</button>' +
+            '<button class="btn-report" onclick="event.stopPropagation();openReport(' + data.indexOf(f) + ')">Report</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="unverified-note">Not yet registered · Is this your shop? Claim it free →</div>';
+    }
+
     card.onclick = function() { selectFlorist(f.id); };
     list.appendChild(card);
   });
