@@ -177,7 +177,7 @@ input[type=range]{width:100%;accent-color:var(--green)}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&callback=initMap" async defer></script>
 
 <script>
 var map, geocoder, placesService;
@@ -189,23 +189,17 @@ var reportingFlorist = null, selectedReason = null;
 var EMOJIS = ['🌸','🌺','🌼','🌻','💐','🌷','🌱','🪷'];
 var COLORS = ['#e8f2e8','#faeae4','#faf3e0','#f0f4e8','#f0e8f4','#e8f0f4','#f4f0e8','#eef0f8'];
 
-var MAP_STYLE = [
-  {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
-  {featureType:'water',stylers:[{color:'#c9e8d1'}]},
-  {featureType:'landscape',stylers:[{color:'#f5f0e8'}]},
-  {featureType:'road',elementType:'geometry',stylers:[{color:'#ffffff'}]},
-  {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#f0ebe0'}]}
-];
+// Map style applied via backgroundColor
 
 function initMap() {
   geocoder = new google.maps.Geocoder();
   map = new google.maps.Map(document.getElementById('googleMap'), {
     zoom: 11,
     center: {lat: 29.4241, lng: -98.4936},
-    styles: MAP_STYLE,
     mapTypeControl: false,
     streetViewControl: false,
-    fullscreenControl: false
+    fullscreenControl: false,
+    backgroundColor: '#f5f0e8'
   });
   placesService = new google.maps.places.PlacesService(map);
 
