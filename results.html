@@ -113,8 +113,8 @@ input[type=range]{width:100%;accent-color:var(--green)}
       <div class="filter-chip" onclick="toggleFilter(this,'weddings')">Weddings</div>
     </div>
     <div class="radius-control">
-      <div class="radius-label">Search radius: <span id="radiusVal">5 miles</span></div>
-      <input type="range" min="1" max="25" value="5" id="radiusSlider" oninput="updateRadius(this.value)" />
+      <div class="radius-label">Search radius: <span id="radiusVal">10 miles</span></div>
+      <input type="range" min="1" max="25" value="10" id="radiusSlider" oninput="updateRadius(this.value)" />
     </div>
     <div id="floristList"><div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.9rem;">Enter a ZIP code above to find florists near you 🌸</div></div>
     <div class="owl-tip" style="margin-top:1rem;">
@@ -162,7 +162,7 @@ input[type=range]{width:100%;accent-color:var(--green)}
         <button class="report-option" onclick="selectReason(this,'other')">💬 Other issue</button>
       </div>
       <textarea class="report-comment" id="reportComment" placeholder="Any additional details (optional)..."></textarea>
-      <p style="font-size:0.72rem;color:#bbb;margin-bottom:0.8rem;line-height:1.5;">Submitting opens your email app with a report to zip@flowersbyzip.com. We review all reports within 24 hours.</p>
+      <p style="font-size:0.72rem;color:#bbb;margin-bottom:0.8rem;line-height:1.5;">Submitting opens your email app with a report to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="275d4e5767414b4850425554455e5d4e570944484a">[email&#160;protected]</a>. We review all reports within 24 hours.</p>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeReport()">Cancel</button>
         <button class="btn-submit-report" onclick="submitReport()">Send Report</button>
@@ -177,7 +177,7 @@ input[type=range]{width:100%;accent-color:var(--green)}
   </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&callback=initMap" async defer></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBkVvhBKYJ2NMpO8ck1kpJVZsw1t5KIvA&libraries=places,geometry&callback=initMap" async defer></script>
 
 <script>
 var map, geocoder, placesService;
@@ -238,7 +238,7 @@ function doSearch() {
 
     var loc = results[0].geometry.location;
     var center = {lat: loc.lat(), lng: loc.lng()};
-    var miles = parseInt(document.getElementById('radiusSlider').value) || 5;
+    var miles = parseInt(document.getElementById('radiusSlider').value) || 10;
     var meters = miles * 1609;
 
     map.setCenter(center);
@@ -433,8 +433,4 @@ function submitReport() {
   document.getElementById('reportSuccess').style.display = 'block';
 }
 
-document.getElementById('reportModal').addEventListener('click', function(e) { if (e.target === this) closeReport(); });
-document.getElementById('zipInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
-</script>
-</body>
-</html>
+document.getElementById('reportMo
